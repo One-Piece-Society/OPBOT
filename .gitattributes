@@ -1,4 +1,4 @@
 # Auto detect text files and perform LF normalization
 * text=auto
 
-api.key filter=git-crypt diff=git-crypt
+api.key filter=git-crypt-OPSOC diff=git-crypt-OPSOC

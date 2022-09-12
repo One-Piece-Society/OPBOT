@@ -1,24 +1,18 @@
 import discord
 
-TOKEN = '<YOUR BOT TOKEN>'
+class MyClient(discord.Client):
+    async def on_ready(self):
+        print('Logged on as', self.user)
 
-client = discord.Client()
+    async def on_message(self, message):
+        # don't respond to ourselves
+        if message.author == self.user:
+            return
 
-@client.event
-async def on_ready():
-    print('We have successfully loggged in as {0.user}'.format(client))
+        if message.content == 'ping':
+            await message.channel.send('pong')
 
-@client.event
-async def on_message(message):
-    if message.author == client.user:
-        return
-
-    if message.content.lower() == 'hello':
-        await message.channel.send(f'Hello, {message.author.display_name}!')
-        return
-
-    if message.content.lower() == 'bye':
-        await message.channel.send(f'See you later, {message.author.display_name}!')
-        return
-
-client.run(TOKEN)
+intents = discord.Intents.default()
+intents.message_content = True
+client = MyClient(intents=intents)
+client.run('token')

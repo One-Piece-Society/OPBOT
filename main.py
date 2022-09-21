@@ -1,5 +1,6 @@
 import discord
 import os, random
+import json
 
 def extract_key():
     f = open("api.key", "r")
@@ -26,6 +27,19 @@ class MyClient(discord.Client):
             
             await message.channel.send(imageName.replace(".jpg", ""))
 
+        if message.content == 'datarandomimage':
+
+            imageName = random.choice(os.listdir("images"))
+            with open(f'images/{imageName}', 'rb') as f:
+                picture = discord.File(f)
+                await message.channel.send(file=picture)
+            
+            datafile = open('cleanData.json', 'r')
+            data = json.load(datafile)
+            info = data[str(imageName.replace(".jpg", ""))]
+            
+            await message.channel.send(info)
+            
 
 if __name__ == '__main__':
     intents = discord.Intents.default()

@@ -1,4 +1,5 @@
 import discord
+import os, random
 
 def extract_key():
     f = open("api.key", "r")
@@ -15,6 +16,15 @@ class MyClient(discord.Client):
 
         if message.content == 'ping':
             await message.channel.send('pong')
+
+        if message.content == 'randomimage':
+
+            imageName = random.choice(os.listdir("images"))
+            with open(f'images/{imageName}', 'rb') as f:
+                picture = discord.File(f)
+                await message.channel.send(file=picture)
+            
+            await message.channel.send(imageName.replace(".jpg", ""))
 
 
 if __name__ == '__main__':

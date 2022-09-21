@@ -39,7 +39,7 @@ class MyClient(discord.Client):
             info = data[str(imageName.replace(".jpg", ""))]
             
             await message.channel.send(info)
-            
+
 
 if __name__ == '__main__':
     intents = discord.Intents.default()

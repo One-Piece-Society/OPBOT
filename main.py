@@ -20,7 +20,7 @@ class MyClient(discord.Client):
 
             imageName = randomFile()
             image = openImageData(imageName)
-            charName = clean(imageName)
+            charName = cleanName(imageName)
             
             info = openCharData(charName)
             
@@ -33,14 +33,16 @@ class MyClient(discord.Client):
 
             imageName = randomFile()
             image = openImageData(imageName)
-            charName = clean(imageName)
+            charName = cleanName(imageName)
             
             info = openCharData(charName)
             
-            embedVar = discord.Embed(title=f"{charName} ()", color=0xed8b02)
+            embedVar = discord.Embed(title=f"{charName} - {info['Japanese Name']}", color=0xed8b02)
             embedVar.set_image(url="attachment://image.jpg")
 
+            embedVar = addAllData(embedVar, info)
             await message.channel.send(file=image, embed=embedVar)
+
             
         if message.content == 'op!help':
             embedVar = discord.Embed(title='Commands', description='To use bot type op![command]', color=0x1d02ed)

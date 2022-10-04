@@ -1,6 +1,4 @@
-import discord
-import os, random
-import json
+from dataGetter import *
 
 def extract_key():
     f = open("api.key", "r")
@@ -15,31 +13,41 @@ class MyClient(discord.Client):
         if message.author == self.user:
             return
 
-        if message.content == 'ping':
+        if message.content == 'op!ping':
             await message.channel.send('pong')
 
-        if message.content == 'randomimage':
+        if message.content == 'op!rimage':
 
-            imageName = random.choice(os.listdir("images"))
-            with open(f'images/{imageName}', 'rb') as f:
-                picture = discord.File(f)
-                await message.channel.send(file=picture)
+            imageName = randomFile()
+            image = openImageData(imageName)
+            charName = clean(imageName)
             
-            await message.channel.send(imageName.replace(".jpg", ""))
-
-        if message.content == 'datarandomimage':
-
-            imageName = random.choice(os.listdir("images"))
-            with open(f'images/{imageName}', 'rb') as f:
-                picture = discord.File(f)
-                await message.channel.send(file=picture)
+            info = openCharData(charName)
             
-            datafile = open('cleanData.json', 'r')
-            data = json.load(datafile)
-            info = data[str(imageName.replace(".jpg", ""))]
-            
-            await message.channel.send(info)
+            embedVar = discord.Embed(title=charName, color=0xed8b02)
+            embedVar.set_image(url="attachment://image.jpg")
 
+            await message.channel.send(file=image, embed=embedVar)
+
+        if message.content == 'op!rdata':
+
+            imageName = randomFile()
+            image = openImageData(imageName)
+            charName = clean(imageName)
+            
+            info = openCharData(charName)
+            
+            embedVar = discord.Embed(title=f"{charName} ()", color=0xed8b02)
+            embedVar.set_image(url="attachment://image.jpg")
+
+            await message.channel.send(file=image, embed=embedVar)
+            
+        if message.content == 'op!help':
+            embedVar = discord.Embed(title='Commands', description='To use bot type op![command]', color=0x1d02ed)
+            embedVar.add_field(name="Image 🖼️", value='rimage, rdata', inline=False)
+            embedVar.add_field(name="Utility ⚙️", value='ping', inline=False)
+            
+            await message.channel.send(embed=embedVar)
 
 if __name__ == '__main__':
     intents = discord.Intents.default()

@@ -12,11 +12,13 @@ class MyClient(discord.Client):
         # don't respond to ourselves
         if message.author == self.user:
             return
+        
+        # clean up message 
 
-        if message.content == 'op!ping':
+        if message.content.lower().startswith("op!ping"):
             await message.channel.send('pong')
 
-        if message.content == 'op!rimage':
+        if message.content.lower().startswith("op!rimage"):
 
             imageName = randomFile()
             image = openImageData(imageName)
@@ -29,7 +31,7 @@ class MyClient(discord.Client):
 
             await message.channel.send(file=image, embed=embedVar)
 
-        if message.content == 'op!rdata':
+        if message.content.lower().startswith('op!rdata'):
 
             imageName = randomFile()
             image = openImageData(imageName)
@@ -44,7 +46,7 @@ class MyClient(discord.Client):
             await message.channel.send(file=image, embed=embedVar)
 
             
-        if message.content == 'op!help':
+        if message.content.lower().startswith('op!help'):
             embedVar = discord.Embed(title='Commands', description='To use bot type op![command]', color=0x1d02ed)
             embedVar.add_field(name="Image 🖼️", value='rimage, rdata', inline=False)
             embedVar.add_field(name="Utility ⚙️", value='ping', inline=False)

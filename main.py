@@ -52,6 +52,9 @@ class MyClient(discord.Client):
             embedVar.add_field(name="Utility ⚙️", value='ping', inline=False)
             
             await message.channel.send(embed=embedVar)
+            
+        if message.content.lower().startswith('op!image'):
+            print("look up image")
 
 if __name__ == '__main__':
     intents = discord.Intents.default()

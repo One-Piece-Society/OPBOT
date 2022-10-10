@@ -9,6 +9,18 @@ class image(commands.Cog):
 
     @commands.command(name="rimage")
     async def random_image(self, ctx):
+        """
+        Generates a random image
+        
+        Description
+        ___________________________________
+        From all images on the OP fandom, generate a random image.
+        
+        Usage
+        ___________________________________
+        op!rimage
+        """
+        
         imageName = randomFile()
         image = openImageData(imageName)
         charName = cleanName(imageName)
@@ -22,6 +34,18 @@ class image(commands.Cog):
 
     @commands.command(name="rdata")
     async def random_image_data(self, ctx):
+        """
+        Generates a random image with data
+        
+        Description
+        ___________________________________
+        From all images on the OP fandom, generate a random image
+        and the character stats.
+        
+        Usage
+        ___________________________________
+        op!rdata
+        """
         imageName = randomFile()
         image = openImageData(imageName)
         charName = cleanName(imageName)

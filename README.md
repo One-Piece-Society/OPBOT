@@ -15,7 +15,8 @@ When designing the bot the following was considered.
 ## The Setup
 
 1. If api keys file does not exist create a new file named ```api.key``` and insert the following
-    ```
+
+    ``` linix
         DiscordAPI-Key = [discord api key]
     ```
 
@@ -26,4 +27,7 @@ When designing the bot the following was considered.
 ## Maintaining functionality
 
 1. Generate python module requirements with
-    ```pipreqs ./ --force```
+
+    ``` linix
+        pipreqs ./ --force
+    ```

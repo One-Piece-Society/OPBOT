@@ -12,6 +12,16 @@ When designing the bot the following was considered.
 - Low maintenance
 - Low processing power and networking bandwidth
 
+## Features
+
+- [\] Help page with upto date spec
+- [\] Random image generator (inc data)
+- [\] Bot stats
+- [ ] RPG style character collector
+- [ ] Search character feature
+- [ ] Guess the charcter game
+- [ ] User profile
+
 ## The Setup
 
 1. If api keys file does not exist create a new file named ```api.key``` and insert the following

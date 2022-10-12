@@ -21,6 +21,7 @@ When designing the bot the following was considered.
 - [ ] Search character feature
 - [ ] Guess the charcter game
 - [ ] User profile
+- [ ] Auto reverification tagger
 
 ## The Setup
 

@@ -12,7 +12,8 @@ def extract_key():
 async def main():
     intents = discord.Intents.default()
     intents.message_content = True
-    client = commands.Bot(intents=intents, command_prefix=["op!","Op!"])
+    # client = commands.Bot(intents=intents, command_prefix=["op!","Op!"])
+    client = commands.Bot(intents=intents, command_prefix=["opt!"])
     async with client:
         for cogFile in os.listdir("cogs"):
             if cogFile.endswith(".py"):

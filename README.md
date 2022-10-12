@@ -14,9 +14,9 @@ When designing the bot the following was considered.
 
 ## Features
 
-- [\] Help page with upto date spec
-- [\] Random image generator (inc data)
-- [\] Bot stats
+- [x] Help page with upto date spec
+- [x] Random image generator (inc data)
+- [x] Bot stats
 - [ ] RPG style character collector
 - [ ] Search character feature
 - [ ] Guess the charcter game

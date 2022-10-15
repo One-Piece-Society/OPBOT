@@ -3,6 +3,7 @@ import random
 import re
 import discord
 import json
+from PIL import Image
 
 
 def randomFile():
@@ -15,6 +16,11 @@ def openImageData(imgName):
 
     return picture
 
+def openBaseImageData(imgName):
+    # with open(f'images/{imgName}', 'rb') as f:
+    #     picture = discord.File(f, filename="image.jpg")
+
+    return Image.open(f'images/{imgName}')
 
 def openCharData(charName):
     datafile = open('cleanData.json', 'r')

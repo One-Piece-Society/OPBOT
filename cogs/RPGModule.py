@@ -124,6 +124,15 @@ class RPG(commands.Cog):
         await ctx.channel.send(ctx.author.id)
         await ctx.channel.send(ctx.author.name)
         
+        embedVar = discord.Embed()
+        embedVar.add_field(name="id", value=ctx.author.id, inline=False)
+        embedVar.add_field(name="name", value=ctx.author.name, inline=False)
+        
+
+        await ctx.channel.send(embed=embedVar)
+
+        
+        
         
 
 async def setup(client):

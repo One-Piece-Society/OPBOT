@@ -120,9 +120,6 @@ class RPG(commands.Cog):
         op!profile 
         """
         
-        await ctx.channel.send("getpass.getuser()")
-        await ctx.channel.send(ctx.author.id)
-        await ctx.channel.send(ctx.author.name)
         
         embedVar = discord.Embed()
         embedVar.add_field(name="id", value=ctx.author.id, inline=False)

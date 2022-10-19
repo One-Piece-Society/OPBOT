@@ -1,6 +1,6 @@
 import discord
 from discord.ext import commands
-# from dataGetter import *
+from dataGetter import *
 from PIL import Image
 import io
 
@@ -127,7 +127,15 @@ class RPG(commands.Cog):
         embedVar.add_field(name="Showcase", value=ctx.author.name, inline=False)
         
 
-        await ctx.channel.send(embed=embedVar)
+        imageName = randomFile()
+        image = openImageData(imageName)
+        charName = cleanName(imageName)
+
+        info = openCharData(charName)
+        embedVar.set_image(url="attachment://image.jpg")
+
+
+        await ctx.channel.send(file=image, embed=embedVar)
 
         
         

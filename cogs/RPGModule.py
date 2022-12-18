@@ -133,6 +133,8 @@ class RPG(commands.Cog):
 
         info = openCharData(charName)
         embedVar.set_image(url="attachment://image.jpg")
+        
+        
 
 
         await ctx.channel.send(file=image, embed=embedVar)

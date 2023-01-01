@@ -39,6 +39,16 @@ class admin(commands.Cog):
         #         print("in")
 
         print(self.client.users)
+        print("----------")
+        print(self.client.get_all_channels())
+    
+        channel = self.client.get_channel(1018874117870583828)
+        await channel.send("Hello, world!")
+
+        print(channel.members)
+
+
+        # print(ctx.channel.id)
         
         # user_id = await find_user_id(guild, name)
         # print("break1")

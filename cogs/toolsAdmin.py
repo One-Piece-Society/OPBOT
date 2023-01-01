@@ -22,18 +22,31 @@ class admin(commands.Cog):
 
     @commands.command(name="findid")
     async def find_id(self, ctx, name):
+        uname = "HUM#3250"
+        print(uname)
+        print(discord.version_info)
+        print(type(ctx))
+        print(type(self.client))
+        # user = ctx.users.find("username", "TESTname");
+
+        # guild = ctx.guild
+        # print("break0")
+        # print(guild)
+        # print(discord.ctx(users))
+        # for guild in ctx.guilds:
+        #     print("mem")
+        #     for member in guild.members:
+        #         print("in")
+
+        print(self.client.users)
         
-        guild = ctx.guild
-        print("break0")
-        print(guild)
+        # user_id = await find_user_id(guild, name)
+        # print("break1")
         
-        user_id = await find_user_id(guild, name)
-        print("break1")
-        
-        if user_id:
-            await ctx.channel.send(f'The user ID of {name} is {user_id}')
-        else:
-            await ctx.channel.send(f'No user was found with the name {name}')
+        # if user_id:
+        #     await ctx.channel.send(f'The user ID of {name} is {user_id}')
+        # else:
+        #     await ctx.channel.send(f'No user was found with the name {name}')
 
 
 async def setup(client):

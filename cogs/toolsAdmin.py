@@ -46,6 +46,20 @@ class admin(commands.Cog):
         await channel.send("Hello, world!")
 
         print(channel.members)
+        # print(channel.members[0])
+
+        # print(channel.members[1])
+        # print(name)
+        for name1 in channel.members:
+            print(type(name1))
+            if str(name1) == name:
+                print("found result of user")
+                print(type(name1))
+                await channel.send(f'<@{name1.id}> pong!')
+
+        role = discord.utils.get(self.client.get_channel(1018874117870583828).roles, name='xxx1')
+        print(role)
+        print(type(role))
 
 
         # print(ctx.channel.id)

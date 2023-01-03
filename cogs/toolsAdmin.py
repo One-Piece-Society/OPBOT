@@ -57,7 +57,7 @@ class admin(commands.Cog):
                 print(type(name1))
                 await channel.send(f'<@{name1.id}> pong!')
 
-        role = discord.utils.get(self.client.get_channel(1018874117870583828).roles, name='xxx1')
+        role = discord.utils.get(self.client.get_channel(1018874117870583828).roles, name='x1xx1')
         print(role)
         print(type(role))
 

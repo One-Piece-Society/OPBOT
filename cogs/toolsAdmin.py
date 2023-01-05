@@ -38,14 +38,14 @@ class admin(commands.Cog):
         #     for member in guild.members:
         #         print("in")
 
-        print(self.client.users)
-        print("----------")
-        print(self.client.get_all_channels())
+        # print(self.client.users)
+        # # print("----------")
+        # print(self.client.get_all_channels())
     
         channel = self.client.get_channel(1018874117870583828)
         await channel.send("Hello, world!")
 
-        print(channel.members)
+        # print(channel.members)
         # print(channel.members[0])
 
         # print(channel.members[1])

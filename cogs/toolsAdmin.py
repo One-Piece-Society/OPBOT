@@ -88,11 +88,3 @@ class admin(commands.Cog):
 async def setup(client):
     await client.add_cog(admin(client))
     print("Loaded Admin module")
-
-async def find_user_id(guild, name):
-    print("break1-a")
-    member = discord.utils.get(guild.members, lambda m: m.name == name)
-    print(member)
-    if member:
-        return member.id
-    return None

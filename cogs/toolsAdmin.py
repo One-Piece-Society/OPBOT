@@ -14,7 +14,7 @@ class admin(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, ctx):
-        if ctx.webhook_id == 1034044078821736458 and "verifyGFWebHKPPServer2022" in ctx.message:
+        if ctx.webhook_id == 1034044078821736458 and "Auth!verifyUserWebServer1.1" in ctx.message:
             modChan = self.client.get_channel(790513461465317386)
             print(type(modChan))
             await ctx.channel.send("received")

@@ -68,7 +68,7 @@ class admin(commands.Cog):
                 # print(role)
                 print(type(role))
 
-                await name1.add_roles(role)
+                await name1.remove_roles(role)
 
 
 

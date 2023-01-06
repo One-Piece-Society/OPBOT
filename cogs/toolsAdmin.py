@@ -1,16 +1,14 @@
 import discord
 from discord.ext import commands
 import time
+import configparser
 
+config = configparser.ConfigParser()
+config.read('config.ini')
 
 class admin(commands.Cog):
     def __init__(self, client):
         self.client = client
-
-    # @commands.command(name="verifyGFWebHKPPServer2022")
-    # async def verify_ping(self, ctx):
-    #     await ctx.channel.send('verifyiing')
-    #     await ctx.channel.send(ctx.channel.id)
 
     @commands.Cog.listener()
     async def on_message(self, ctx):

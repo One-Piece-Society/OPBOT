@@ -1,3 +1,2 @@
 images/*
-api.key
-config.ini
+*.ini

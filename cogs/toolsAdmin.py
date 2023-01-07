@@ -12,10 +12,17 @@ class admin(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, ctx):
-        if ctx.webhook_id == 1034044078821736458 and "Auth!verifyUserWebServer1.1" in ctx.content:
+        # TODO reimplement 
 
-            print(ctx.content)
-            
+        verifyCommand = config['verification']['webhookCommand']
+
+        # ctx.webhook_id == config['verification']['webhookBotID'] and
+        if verifyCommand in ctx.content:
+
+            verifcationName = ctx.content[len(verifyCommand)+1:]
+            print(verifcationName)
+
+
             await ctx.channel.send("received")
 
     @commands.command(name="findid")

@@ -79,6 +79,7 @@ class admin(commands.Cog):
 
 
         print("error user not found or needs manual verification ")
+        print(username)
         # print(ctx.channel.id)
         
         # user_id = await find_user_id(guild, name)

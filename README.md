@@ -25,10 +25,20 @@ When designing the bot the following was considered.
 
 ## The Setup
 
-1. If api keys file does not exist create a new file named ```api.key``` and insert the following
+1. If api keys or config file does not exist create a new file named ```config.ini``` and insert the following
 
-    ``` linix
-        DiscordAPI-Key = [discord api key]
+    ``` ini
+        [keys]
+        DiscordAPI-Key=XXXX.XXXX.XXXX
+
+        [verification]
+        webhookCommand=Command!name
+        webhookBotID=11111111111111111111
+        targetChannelID=11111111111111111111
+        targetGuildID=11111111111111111111
+
+        [testing]
+        isproduction=false
     ```
 
 2. Start instance of Docker

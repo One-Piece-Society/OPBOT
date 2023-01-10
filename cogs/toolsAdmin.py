@@ -20,12 +20,15 @@ class admin(commands.Cog):
         if verifyCommand in ctx.content:
 
             verifcationName = ctx.content[len(verifyCommand)+1:]
-            print(verifcationName)
+            # print(verifcationName)
 
+            found = True
             authChannel = self.client.get_channel(config['verification']['targetChannelID'])
-            
-            
-            
+            for user in authChannel.members:
+                if str(user) == verifcationName:
+                    found = True
+                    
+                    break 
             
             
             await authChannel.send("Hello, world!")

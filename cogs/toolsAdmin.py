@@ -22,8 +22,13 @@ class admin(commands.Cog):
             verifcationName = ctx.content[len(verifyCommand)+1:]
             print(verifcationName)
 
-            channel = self.client.get_channel(config['verification']['targetChannelID'])
-            await channel.send("Hello, world!")
+            authChannel = self.client.get_channel(config['verification']['targetChannelID'])
+            
+            
+            
+            
+            
+            await authChannel.send("Hello, world!")
 
             await ctx.channel.send("received")
 

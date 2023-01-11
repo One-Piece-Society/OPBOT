@@ -22,7 +22,7 @@ class admin(commands.Cog):
             verifcationName = ctx.content[len(verifyCommand)+1:]
             # print(verifcationName)
 
-            found = True
+            found = False
             authChannel = self.client.get_channel(config['verification']['targetChannelID'])
             for user in authChannel.members:
                 if str(user) == verifcationName:
@@ -30,6 +30,11 @@ class admin(commands.Cog):
                     
                     break 
             
+            if found == False:
+                #  TODO add error channel code
+                errorChan = self.client.get_channel(here)
+                await errorChan.send("Hello, world!")
+
             
             await authChannel.send("Hello, world!")
 

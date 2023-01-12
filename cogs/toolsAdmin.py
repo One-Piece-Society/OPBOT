@@ -34,6 +34,8 @@ class admin(commands.Cog):
                 #  TODO add error channel code
                 errorChan = self.client.get_channel(here)
                 await errorChan.send("Hello, world!")
+            else:
+                # send a welcome message 
 
             
             await authChannel.send("Hello, world!")
@@ -89,6 +91,8 @@ class admin(commands.Cog):
                 print(type(role))
 
                 await name1.remove_roles(role)
+
+
 
 
 

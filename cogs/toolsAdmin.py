@@ -6,14 +6,15 @@ import configparser
 config = configparser.ConfigParser()
 config.read('config.ini')
 
+
 class admin(commands.Cog):
     def __init__(self, client):
         self.client = client
 
     @commands.Cog.listener()
     async def on_message(self, ctx):
-        # TODO reimplement 
-
+        # TODO reimplement
+        # print(type(ctx.content))
         verifyCommand = config['verification']['webhookCommand']
 
         # ctx.webhook_id == config['verification']['webhookBotID'] and
@@ -23,24 +24,43 @@ class admin(commands.Cog):
             # print(verifcationName)
 
             found = False
-            authChannel = self.client.get_channel(config['verification']['targetChannelID'])
+            authChannel = self.client.get_channel(
+                config['verification']['targetChannelID'])
             for user in authChannel.members:
                 if str(user) == verifcationName:
                     found = True
-                    
-                    break 
-            
+
+                    break
+
             if found == False:
                 #  TODO add error channel code
                 errorChan = self.client.get_channel(here)
                 await errorChan.send("Hello, world!")
             else:
-                # send a welcome message 
+                # send a welcome message
 
-            
-            await authChannel.send("Hello, world!")
+                await authChannel.send("Hello, world!")
 
             await ctx.channel.send("received")
+        elif "admin!debugInfo" == ctx.content and ctx.author.id == int(config['adminstration']['level1OverRide']):
+
+            infoMessage = f'''Setup Info
+
+            Username: {ctx.author.name}
+            User ID: {ctx.author.id}
+            Channel ID: {ctx.channel.id}
+            Server (Guild) ID: {ctx.guild.id}
+        
+            Discord Usage Info: {discord.version_info}
+            '''
+
+            await ctx.channel.send(infoMessage)
+
+        elif ctx.content.startswith('admin!verify') and ctx.author.id == int(config['adminstration']['level1OverRide']):
+
+            await ctx.channel.send("admin command usage")
+
+            await ctx.channel.send(ctx.author.id)
 
     @commands.command(name="findid")
     async def find_id(self, ctx, name):
@@ -63,7 +83,7 @@ class admin(commands.Cog):
         # print(self.client.users)
         # # print("----------")
         # print(self.client.get_all_channels())
-    
+
         channel = self.client.get_channel(1018874117870583828)
         await channel.send("Hello, world!")
 
@@ -86,23 +106,18 @@ class admin(commands.Cog):
                 print("asd")
                 print(guild.roles)
                 role = discord.utils.get(guild.roles, name='xxx1')
-                
+
                 # print(role)
                 print(type(role))
 
                 await name1.remove_roles(role)
 
-
-
-
-
-
-        print(f"error user "{name}" not found or needs manual verification ")
+        # print(f"error user "{name}" not found or needs manual verification ")
         # print(ctx.channel.id)
-        
+
         # user_id = await find_user_id(guild, name)
         # print("break1")
-        
+
         # if user_id:
         #     await ctx.channel.send(f'The user ID of {name} is {user_id}')
         # else:
@@ -111,4 +126,5 @@ class admin(commands.Cog):
 
 async def setup(client):
     await client.add_cog(admin(client))
+
     print("Loaded Admin module")

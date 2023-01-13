@@ -55,12 +55,7 @@ class admin(commands.Cog):
             '''
 
             await ctx.channel.send(infoMessage)
-
-        elif ctx.content.startswith('admin!verify') and ctx.author.id == int(config['adminstration']['level1OverRide']):
-
-            await ctx.channel.send("admin command usage")
-
-            await ctx.channel.send(ctx.author.id)
+            
 
     @commands.command(name="findid")
     async def find_id(self, ctx, name):

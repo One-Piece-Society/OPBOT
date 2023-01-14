@@ -35,7 +35,7 @@ class admin(commands.Cog):
             if found == False:
                 #  TODO add error channel code
                 errorChan = self.client.get_channel(here)
-                await errorChan.send("Hello, world!")
+                await errorChan.send("Welcome to the server!")
             else:
                 # send a welcome message
 

@@ -39,7 +39,7 @@ class admin(commands.Cog):
             else:
                 # send a welcome message
 
-                await authChannel.send("Hello, world!")
+                await authChannel.send("Welcome @ping to the server!")
 
             await ctx.channel.send("received")
         elif "admin!debugInfo" == ctx.content and ctx.author.id == int(config['adminstration']['level1OverRide']):

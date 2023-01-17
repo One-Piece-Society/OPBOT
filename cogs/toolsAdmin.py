@@ -15,6 +15,8 @@ class admin(commands.Cog):
     async def on_message(self, ctx):
         # TODO reimplement
         # print(type(ctx.content))
+
+        
         verifyCommand = config['verification']['webhookCommand']
 
         # ctx.webhook_id == config['verification']['webhookBotID'] and

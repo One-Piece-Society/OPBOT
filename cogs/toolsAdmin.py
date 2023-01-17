@@ -36,6 +36,7 @@ class admin(commands.Cog):
 
             else:
                 removalRole = discord.utils.get(authChannel.roles, name='x1xx1')
+                verifiedRole = discord.utils.get(authChannel.roles, name='x1xx1')
 
             # if found == False:
             #     #  TODO add error channel code

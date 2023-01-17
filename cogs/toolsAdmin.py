@@ -16,32 +16,35 @@ class admin(commands.Cog):
         # TODO reimplement
         # print(type(ctx.content))
 
-        
         verifyCommand = config['verification']['webhookCommand']
 
         # ctx.webhook_id == config['verification']['webhookBotID'] and
         if verifyCommand in ctx.content:
 
             verifcationName = ctx.content[len(verifyCommand)+1:]
-            # print(verifcationName)
 
             found = False
             authChannel = self.client.get_channel(
-                config['verification']['targetChannelID'])
-            for user in authChannel.members:
-                if str(user) == verifcationName:
-                    found = True
+                int(config['verification']['targetChannelID']))
 
-                    break
+            user = next((member for member in authChannel.members if str(
+                member) == verifcationName), None)
 
-            if found == False:
-                #  TODO add error channel code
-                errorChan = self.client.get_channel(here)
-                await errorChan.send("Welcome to the server!")
+            if user == None:
+                print("not foudn ")
+                # TODO implement error state 
+
             else:
-                # send a welcome message
+                removalRole = discord.utils.get(authChannel.roles, name='x1xx1')
 
-                await authChannel.send("Welcome @ping to the server!")
+            # if found == False:
+            #     #  TODO add error channel code
+            #     errorChan = self.client.get_channel(here)
+            #     await errorChan.send("Welcome to the server!")
+            # else:
+            #     # send a welcome message
+
+            #     await authChannel.send("Welcome @ping to the server!")
 
             await ctx.channel.send("received")
         elif "admin!debugInfo" == ctx.content and ctx.author.id == int(config['adminstration']['level1OverRide']):
@@ -57,7 +60,6 @@ class admin(commands.Cog):
             '''
 
             await ctx.channel.send(infoMessage)
-            
 
     # @commands.command(name="findid")
     # async def find_id(self, ctx, name):

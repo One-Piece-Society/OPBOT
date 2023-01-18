@@ -35,20 +35,14 @@ class admin(commands.Cog):
                 # TODO implement error state 
 
             else:
-                print(str(authChannel.roles))
-                print("hi1")
-                
-                # config['verification']['unverifiedRole']
+                removalRole = discord.utils.get(authChannel.guild.roles, name=config['verification']['unverifiedRole'])                
+                verifiedRole = discord.utils.get(authChannel.guild.roles, name=config['verification']['verifiedRole'])
 
-                removalRole = discord.utils.get(authChannel.roles, name='xxx1')
-                print("hi2")
-                
-                # verifiedRole = discord.utils.get(authChannel.roles, name=config['verification']['verifiedRole'])
-
-                print("hi")
-                print(user.roles)
                 if removalRole in user.roles:
-                    print("has removed role")
+                    await user.remove_roles(removalRole)
+
+                if verifiedRole not in user.roles:
+                    await user.add_roles(verifiedRole)
 
             # if found == False:
             #     #  TODO add error channel code

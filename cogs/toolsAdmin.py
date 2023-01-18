@@ -37,6 +37,7 @@ class admin(commands.Cog):
             else:
                 print(str(authChannel.roles))
                 print("hi1")
+                
                 # config['verification']['unverifiedRole']
 
                 removalRole = discord.utils.get(authChannel.roles, name='xxx1')

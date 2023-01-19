@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 import time
 import configparser
+import re
 
 config = configparser.ConfigParser()
 config.read('config.ini')
@@ -13,11 +14,8 @@ class admin(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, ctx):
-        # TODO reimplement
-        # print(type(ctx.content))
 
         verifyCommand = config['verification']['webhookCommand']
-
         # ctx.webhook_id == config['verification']['webhookBotID'] and
         if verifyCommand in ctx.content:
 
@@ -31,20 +29,31 @@ class admin(commands.Cog):
                 member) == verifcationName), None)
 
             if user == None:
-                print("not foudn ")
-                # TODO implement error state 
+                reboundChannel = self.client.get_channel(
+                    int(config['verification']['errorStateChannel']))
+                await reboundChannel.send(f"Manual verificiation required for ({verifcationName})\nUse < !verify @user > in the welcome channel")
 
             else:
-                removalRole = discord.utils.get(authChannel.guild.roles, name=config['verification']['unverifiedRole'])                
-                verifiedRole = discord.utils.get(authChannel.guild.roles, name=config['verification']['verifiedRole'])
+                await verify_user(user, authChannel)
+                await ctx.add_reaction('👍')
 
-                if removalRole in user.roles:
-                    await user.remove_roles(removalRole)
+        elif "!verify " == ctx.content[:8]:
 
-                if verifiedRole not in user.roles:
-                    await user.add_roles(verifiedRole)
+            authReq = discord.utils.get(
+                ctx.channel.guild.roles, name=config['adminstration']['level2OverRideRole'])
+            
+            if authReq not in ctx.author.roles:
+                await ctx.add_reaction('❌')
+                return
 
-                await authChannel.send(f"Welcome <@{user.id}> to the server!")
+            match = re.search(r'\d+', ctx.content[8:])
+            print(int(match.group()))
+
+            user = [member for member in ctx.channel.members if
+                    member.id == int(match.group())][0]
+
+            await verify_user(user, ctx.channel)
+            await ctx.add_reaction('👍')
 
         elif "admin!debugInfo" == ctx.content and ctx.author.id == int(config['adminstration']['level1OverRide']):
 
@@ -120,6 +129,21 @@ class admin(commands.Cog):
     #     #     await ctx.channel.send(f'The user ID of {name} is {user_id}')
     #     # else:
     #     #     await ctx.channel.send(f'No user was found with the name {name}')
+
+
+async def verify_user(user, channel):
+    removalRole = discord.utils.get(
+        channel.guild.roles, name=config['verification']['unverifiedRole'])
+    verifiedRole = discord.utils.get(
+        channel.guild.roles, name=config['verification']['verifiedRole'])
+
+    if removalRole in user.roles:
+        await user.remove_roles(removalRole)
+
+    if verifiedRole not in user.roles:
+        await user.add_roles(verifiedRole)
+
+    await channel.send(f"Welcome <@{user.id}> to the server!")
 
 
 async def setup(client):

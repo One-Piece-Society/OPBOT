@@ -21,24 +21,32 @@ When designing the bot the following was considered.
 - [ ] Search character feature
 - [ ] Guess the charcter game
 - [ ] User profile
-- [ ] Auto reverification tagger
+- [x] Auto reverification tagger
+- [x] Manual verification bypass
 
 ## The Setup
 
 1. If api keys or config file does not exist create a new file named ```config.ini``` and insert the following
 
     ``` ini
-        [keys]
-        DiscordAPI-Key=XXXX.XXXX.XXXX
+    [keys]
+    DiscordAPI-Key=XXXX.XXXX.XXXX
 
-        [verification]
-        webhookCommand=Command!name
-        webhookBotID=11111111111111111111
-        targetChannelID=11111111111111111111
-        targetGuildID=11111111111111111111
+    [verification]
+    webhookCommand=Command!
+    webhookBotID=1234567890
+    targetChannelID=1234567890
+    unverifiedRole=role1
+    verifiedRole=role2
+    errorStateChannel=1234567890
 
-        [testing]
-        isproduction=false
+    [adminstration]
+    level1OverRide=1234567890
+    level2OverRideRole=role3
+
+    [testing]
+    isproduction=false
+    disableAdmin=false
     ```
 
 2. Start instance of Docker

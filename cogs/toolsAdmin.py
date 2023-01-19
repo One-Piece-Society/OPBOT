@@ -3,6 +3,8 @@ from discord.ext import commands
 import time
 import configparser
 import re
+import os
+
 
 config = configparser.ConfigParser()
 config.read('config.ini')
@@ -34,7 +36,7 @@ class admin(commands.Cog):
                 reboundChannel = self.client.get_channel(
                     int(config['verification']['errorStateChannel']))
                 await reboundChannel.send(f"Manual verificiation required for ({verifcationName})\nUse < !verify @user > in the welcome channel")
-
+                log_usage(f"Manual verify message - {verifcationName}")
             else:
                 await verify_user(user, authChannel)
                 await ctx.add_reaction('👍')
@@ -49,11 +51,11 @@ class admin(commands.Cog):
                 return
 
             match = re.search(r'\d+', ctx.content[8:])
-            print(int(match.group()))
-
             user = [member for member in ctx.channel.members if
                     member.id == int(match.group())][0]
 
+            log_usage(
+                f"Manual Verify request by - {ctx.author.id} as username {ctx.author}")
             await verify_user(user, ctx.channel)
             await ctx.add_reaction('👍')
 
@@ -85,9 +87,18 @@ async def verify_user(user, channel):
         await user.add_roles(verifiedRole)
 
     await channel.send(f"Welcome <@{user.id}> to the server!")
+    log_usage(f"Verified - {user.id} as username {user}")
+
+
+def log_usage(msg):
+    if not os.path.exists("admin.log"):
+        open("admin.log", "w").close()
+
+    with open("admin.log", "a") as file:
+        file.write(f"{str(time.time())} || {msg}\n")
 
 
 async def setup(client):
     await client.add_cog(admin(client))
-
+    log_usage("Admin Module Reloaded")
     print("Loaded Admin module")

@@ -44,14 +44,8 @@ class admin(commands.Cog):
                 if verifiedRole not in user.roles:
                     await user.add_roles(verifiedRole)
 
-            # if found == False:
-            #     #  TODO add error channel code
-            #     errorChan = self.client.get_channel(here)
-            #     await errorChan.send("Welcome to the server!")
-            # else:
-            #     # send a welcome message
+                await authChannel.send(f"Welcome <@{user.id}> to the server!")
 
-            #     await authChannel.send("Welcome @ping to the server!")
 
             await ctx.channel.send("received")
         elif "admin!debugInfo" == ctx.content and ctx.author.id == int(config['adminstration']['level1OverRide']):

@@ -23,6 +23,7 @@ When designing the bot the following was considered.
 - [ ] User profile
 - [x] Auto reverification tagger
 - [x] Manual verification bypass
+- [x] Verification logs + timestamps
 
 ## The Setup
 

@@ -15,9 +15,11 @@ class admin(commands.Cog):
     @commands.Cog.listener()
     async def on_message(self, ctx):
 
+        if config['testing']['disableAdmin'] == "true":
+            return
+
         verifyCommand = config['verification']['webhookCommand']
-        # ctx.webhook_id == config['verification']['webhookBotID'] and
-        if verifyCommand in ctx.content:
+        if ctx.webhook_id == config['verification']['webhookBotID'] and verifyCommand in ctx.content:
 
             verifcationName = ctx.content[len(verifyCommand)+1:]
 

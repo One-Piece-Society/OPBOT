@@ -46,8 +46,6 @@ class admin(commands.Cog):
 
                 await authChannel.send(f"Welcome <@{user.id}> to the server!")
 
-
-            await ctx.channel.send("received")
         elif "admin!debugInfo" == ctx.content and ctx.author.id == int(config['adminstration']['level1OverRide']):
 
             infoMessage = f'''Setup Info

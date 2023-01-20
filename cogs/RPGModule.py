@@ -121,23 +121,36 @@ class RPG(commands.Cog):
         """
         
         
-        embedVar = discord.Embed()
-        embedVar.add_field(name="id", value=ctx.author.id, inline=False)
-        embedVar.add_field(name="name", value=ctx.author.name, inline=False)
-        embedVar.add_field(name="Showcase", value=ctx.author.name, inline=False)
+        # embedVar = discord.Embed()
+        # embedVar.add_field(name="id", value=ctx.author.id, inline=False)
+        # embedVar.add_field(name="name", value=ctx.author.name, inline=False)
+        # embedVar.add_field(name="Showcase", value=ctx.author.name, inline=False)
         
-
-        imageName = randomFile()
-        image = openImageData(imageName)
-        charName = cleanName(imageName)
-
-        info = openCharData(charName)
-        embedVar.set_image(url="attachment://image.jpg")
-        
-        
+        # embedVar.set_thumbnail(url=ctx.author.avatar_url)
 
 
-        await ctx.channel.send(file=image, embed=embedVar)
+        # imageName = randomFile()
+        # image = openImageData(imageName)
+        # charName = cleanName(imageName)
+
+        # info = openCharData(charName)
+        # embedVar.set_image(url="attachment://image.jpg")
+        # print(ctx.author.avatar_url)
+        member = ctx.author
+
+        embed = discord.Embed(title=f"{member.name}'s Profile", color=0x00ff00)
+        embed.set_thumbnail(url=member.avatar.url)
+        embed.add_field(name="Name", value=member.name, inline=True)
+        embed.add_field(name="ID", value=member.id, inline=True)
+        embed.add_field(name="Account Created At", value=member.created_at.strftime("%B %d, %Y"), inline=True)
+        embed.add_field(name="Server Join Date", value=member.joined_at.strftime("%B %d, %Y"), inline=True)
+        await ctx.channel.send(embed=embed)
+        await ctx.channel.send(member.avatar_url)
+
+
+
+
+        # await ctx.channel.send(embed=embedVar)
 
         
         

@@ -98,7 +98,7 @@ class RPG(commands.Cog):
 
         Usage
         ___________________________________
-        op!shop
+        op!shop [item]
         """
 
         embed = discord.Embed(color=0xf2ff00)
@@ -107,13 +107,17 @@ class RPG(commands.Cog):
             embed.add_field(
                 name=item, value=self.shopInfo[item]["description"], inline=False)
             embed.add_field(name="", value="", inline=False)
-            
-            embed.add_field(name="Cost", value=self.shopInfo[item]["cost"], inline=False)
-            
-            embed.add_field(name="❤️", value=self.shopInfo[item]["health"], inline=True)
-            embed.add_field(name="🗡️", value=self.shopInfo[item]["attack"], inline=True)
-            embed.add_field(name="🛡️", value=self.shopInfo[item]["defense"], inline=True)
-            
+
+            embed.add_field(
+                name="Cost", value=self.shopInfo[item]["cost"], inline=False)
+
+            embed.add_field(
+                name="❤️", value=self.shopInfo[item]["health"], inline=True)
+            embed.add_field(
+                name="🗡️", value=self.shopInfo[item]["attack"], inline=True)
+            embed.add_field(
+                name="🛡️", value=self.shopInfo[item]["defence"], inline=True)
+
             await ctx.channel.send(embed=embed)
             return
 
@@ -128,6 +132,43 @@ class RPG(commands.Cog):
             embed.add_field(name=formatted_text, value="", inline=False)
 
         await ctx.channel.send(embed=embed)
+
+    @commands.command(name="buy")
+    async def shop_prompt(self, ctx, item=None):
+        """
+        Chooses an item to buy 
+
+        Description
+        ___________________________________
+        Allow you to buy an item 
+
+        Usage
+        ___________________________________
+        op!buy <item>
+        """
+        self.data = addUser(self.data, str(ctx.author.id))
+
+        embed = discord.Embed(color=0xf2ff00)
+
+        if item == None:
+            embed.add_field(name="Please specifiy an item",
+                            value="", inline=False)
+            await ctx.channel.send(embed=embed)
+            return
+
+        if item in self.shopInfo and self.data[str(ctx.author.id)]["bal"] >= self.shopInfo[item]["cost"]:
+            embed.add_field(
+                name=f"You have obtained a {item}", value="", inline=False)
+            self.data[str(ctx.author.id)]["bal"] -= self.shopInfo[item]["cost"]
+            self.data[str(ctx.author.id)
+                      ]["health"] += self.shopInfo[item]["health"]
+            self.data[str(ctx.author.id)
+                      ]["attack"] += self.shopInfo[item]["attack"]
+            self.data[str(ctx.author.id)
+                      ]["defence"] += self.shopInfo[item]["defence"]
+
+        await ctx.channel.send(embed=embed)
+        saveData(self.data)
 
     @commands.command(name="profile")
     async def profile_prompt(self, ctx, selected_user=None):
@@ -184,7 +225,8 @@ def addUser(data, uid):
         data[str(uid)]["last_daily"] = 0
         data[str(uid)]["bal"] = 0
         data[str(uid)]["health"] = 10
-        data[str(uid)]["inventory"] = {}
+        data[str(uid)]["attack"] = 1
+        data[str(uid)]["defence"] = 1
 
     return data
 

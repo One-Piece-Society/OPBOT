@@ -1,23 +1,23 @@
 {
     "potion": {
-        "description": "A spell crafted by the one and only Chopper",
+        "description": "A spell crafted by the one and only Chopper, gives 1 health",
         "cost": 200,
         "health": 1,
         "attack": 0,
-        "defense": 0
+        "defence": 0
     },
     "sword": {
         "description": "Once a sharp pointy stick now made with metal",
         "cost": 1000,
         "health": 0,
         "attack": 1,
-        "defense": 0
+        "defence": 0
     },
     "shield": {
         "description": "The Shield is a powerful and durable shield made of pure iron, used by the Marines",
         "cost": 500,
         "health": 0,
         "attack": 0,
-        "defense": 1
+        "defence": 1
     }
 }

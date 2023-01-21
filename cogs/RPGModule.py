@@ -11,7 +11,8 @@ import random
 class RPG(commands.Cog):
     def __init__(self, client):
         self.client = client
-        self.data = loadData()
+        self.data = loadData("rpgData.json")
+        self.shopInfo = loadData("shop.json")
 
     @commands.command(name="daily")
     async def daily_prompt(self, ctx):
@@ -26,26 +27,21 @@ class RPG(commands.Cog):
         ___________________________________
         op!daily
         """
+        self.data = addUser(self.data, str(ctx.author.id))
 
-        if ctx.author.id not in self.data:
-            self.data[ctx.author.id] = {}
-            self.data[ctx.author.id]["last_daily"] = 0
-            self.data[ctx.author.id]["bal"] = 0
-
-        prevDaily = time.time() - self.data[ctx.author.id]["last_daily"]
+        prevDaily = time.time() - self.data[str(ctx.author.id)]["last_daily"]
         if prevDaily > 72000:
             newAmount = random.randint(100, 1000)
-            self.data[ctx.author.id]["bal"] += newAmount
-            self.data[ctx.author.id]["last_daily"] = time.time()
+            self.data[str(ctx.author.id)]["bal"] += newAmount
+            self.data[str(ctx.author.id)]["last_daily"] = time.time()
 
             embed = discord.Embed(color=0xff8c00)
             embed.add_field(
                 name=f"You got 🪙 {newAmount}", value="", inline=True)
-            # await ctx.channel.send(embed=embed)
 
         else:
-            hours = (prevDaily + 72000) // 3600
-            minutes = ((prevDaily + 72000) - (hours * 3600)) // 60
+            hours = (72000 - prevDaily) // 3600
+            minutes = ((72000 - prevDaily) - (hours * 3600)) // 60
 
             embed = discord.Embed(color=0xff0000)
             if hours >= 1:
@@ -56,7 +52,82 @@ class RPG(commands.Cog):
                     name=f"Hey we haven't found the treasure yet, Try again in {int(minutes)} minutes", value="", inline=True)
 
         await ctx.channel.send(embed=embed)
-        print(self.data)
+        saveData(self.data)
+
+    @commands.command(name="bal")
+    async def bal_prompt(self, ctx):
+        """
+        How rich are you
+
+        Description
+        ___________________________________
+        Tells you how rich you are 
+
+        Usage
+        ___________________________________
+        op!bal
+        """
+
+        embed = discord.Embed(color=0xf2ff00)
+
+        self.data = addUser(self.data, str(ctx.author.id))
+
+        currentBal = self.data[str(ctx.author.id)]["bal"]
+        if currentBal == 0:
+            embed.add_field(
+                name=f"Seems lonely you have 🪙 0", value="Here is a free cookie 🍪", inline=True)
+            self.data[str(ctx.author.id)]["bal"] += 10
+
+        else:
+            embed.add_field(
+                name=f"You have 🪙 {currentBal}", value="", inline=True)
+
+        await ctx.channel.send(embed=embed)
+        saveData(self.data)
+
+    @commands.command(name="shop")
+    async def shop_prompt(self, ctx, item=None):
+        """
+        Things you can buy
+
+        Description
+        ___________________________________
+        From fish to candy what can one buy?
+        The follow command lists out the 
+        individual items available for purchase.
+
+        Usage
+        ___________________________________
+        op!shop
+        """
+
+        embed = discord.Embed(color=0xf2ff00)
+
+        if item in self.shopInfo:
+            embed.add_field(
+                name=item, value=self.shopInfo[item]["description"], inline=False)
+            embed.add_field(name="", value="", inline=False)
+            
+            embed.add_field(name="Cost", value=self.shopInfo[item]["cost"], inline=False)
+            
+            embed.add_field(name="❤️", value=self.shopInfo[item]["health"], inline=True)
+            embed.add_field(name="🗡️", value=self.shopInfo[item]["attack"], inline=True)
+            embed.add_field(name="🛡️", value=self.shopInfo[item]["defense"], inline=True)
+            
+            await ctx.channel.send(embed=embed)
+            return
+
+        embed.add_field(
+            name=f"Luffy's Shop", value="Do op!shop [item] for more info", inline=False)
+        embed.add_field(name="", value="", inline=False)
+
+        for item in self.shopInfo:
+            cost = str(self.shopInfo[item]["cost"])
+            formatted_text = "{:<{}}{:>{}}".format(
+                str(item), 20, f"{cost} 🪙", 20)
+            embed.add_field(name=formatted_text, value="", inline=False)
+
+        await ctx.channel.send(embed=embed)
 
     @commands.command(name="profile")
     async def profile_prompt(self, ctx, selected_user=None):
@@ -93,20 +164,28 @@ class RPG(commands.Cog):
         # await ctx.channel.send(embed=embedVar)
 
 
-def loadData():
-    if not os.path.exists("rpgData.json"):
-        with open("rpgData.json", "w") as file:
+def loadData(path):
+    if not os.path.exists(path):
+        with open(path, "w") as file:
             json.dump({}, file)
 
-    with open("rpgData.json") as file:
+    with open(path) as file:
         return json.load(file)
 
-# def get_user(data, uid):
-#     if uid in data:
-#         return
 
-# def get_user_bank(uid):
-#     user = get_user(get_RPG_data(), uid)
+def saveData(data):
+    with open("rpgData.json", "w") as file:
+        json.dump(data, file, indent=4)
+
+
+def addUser(data, uid):
+    if str(uid) not in data:
+        data[str(uid)] = {}
+        data[str(uid)]["last_daily"] = 0
+        data[str(uid)]["bal"] = 0
+        data[str(uid)]["health"] = 10
+
+    return data
 
 
 async def setup(client):

@@ -184,6 +184,7 @@ def addUser(data, uid):
         data[str(uid)]["last_daily"] = 0
         data[str(uid)]["bal"] = 0
         data[str(uid)]["health"] = 10
+        data[str(uid)]["inventory"] = {}
 
     return data
 

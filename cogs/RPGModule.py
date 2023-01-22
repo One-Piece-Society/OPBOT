@@ -61,7 +61,7 @@ class RPG(commands.Cog):
 
         Description
         ___________________________________
-        Tells you how rich you are 
+        Tells you how rich you are
 
         Usage
         ___________________________________
@@ -93,7 +93,7 @@ class RPG(commands.Cog):
         Description
         ___________________________________
         From fish to candy what can one buy?
-        The follow command lists out the 
+        The follow command lists out the
         individual items available for purchase.
 
         Usage
@@ -136,11 +136,11 @@ class RPG(commands.Cog):
     @commands.command(name="buy")
     async def shop_prompt(self, ctx, item=None):
         """
-        Chooses an item to buy 
+        Chooses an item to buy
 
         Description
         ___________________________________
-        Allow you to buy an item 
+        Allow you to buy an item
 
         Usage
         ___________________________________
@@ -169,6 +169,40 @@ class RPG(commands.Cog):
 
         await ctx.channel.send(embed=embed)
         saveData(self.data)
+
+    @commands.command(name="top")
+    async def shop_prompt(self, ctx):
+        """
+        Finds the richest user
+
+        Description
+        ___________________________________
+        A leaderboard for users wealth
+
+        Usage
+        ___________________________________
+        op!top
+        """
+        self.data = addUser(self.data, str(ctx.author.id))
+
+        embed = discord.Embed(color=0xff00e6)
+        embed.add_field(name=f"Leaderboard", value="", inline=False)
+
+        for item in sorted(self.data.items(), key=lambda x: x[1]["bal"])[:-6:-1]:
+            try:
+                user = [member for member in ctx.channel.members if
+                        member.id == int(item[0])][0]
+                username = user.name
+
+            except:
+                username = "?????"
+
+            ubal = item[1]["bal"]
+            embed.add_field(name=f"{username} (🪙 {ubal})", value="", inline=False)
+
+        await ctx.channel.send(embed=embed)
+        saveData(self.data)
+
 
     @commands.command(name="profile")
     async def profile_prompt(self, ctx, selected_user=None):

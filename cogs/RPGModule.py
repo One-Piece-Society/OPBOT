@@ -171,7 +171,7 @@ class RPG(commands.Cog):
         saveData(self.data)
 
     @commands.command(name="top")
-    async def shop_prompt(self, ctx):
+    async def top_prompt(self, ctx):
         """
         Finds the richest user
 
@@ -198,11 +198,83 @@ class RPG(commands.Cog):
                 username = "?????"
 
             ubal = item[1]["bal"]
-            embed.add_field(name=f"{username} (🪙 {ubal})", value="", inline=False)
+            embed.add_field(name=f"{username} (🪙 {ubal})",
+                            value="", inline=False)
 
         await ctx.channel.send(embed=embed)
         saveData(self.data)
 
+    @commands.command(name="gamble")
+    async def gamble_prompt(self, ctx, amount):
+        """
+        Double your money 
+
+        Description
+        ___________________________________
+        Gives a chance to double your money or 
+        get more???
+
+        Usage
+        ___________________________________
+        op!gamble <amount/all>
+        """
+        self.data = addUser(self.data, str(ctx.author.id))
+
+        embed = discord.Embed(color=0xff00e6)
+        embed.add_field(
+            name=f"Gamble", value="Weird odds are used", inline=False)
+
+        if self.data[str(ctx.author.id)]["bal"] == 0:
+            embed.add_field(
+                name=f"A bit lacking on funds, Come back later", value="", inline=False)
+
+        else:
+
+            if amount == "all":
+                amount = str(self.data[str(ctx.author.id)]["bal"])
+
+            if amount.isnumeric() and self.data[str(ctx.author.id)]["bal"] >= int(amount):
+                self.data[str(ctx.author.id)]["bal"] -= int(amount)
+                odds = random.randint(1, 1000)
+                win = 0
+
+                if odds == 1:
+                    embed.add_field(
+                        name=f"100x your money (wait thats an option?)", value="", inline=False)
+                    win = int(amount)*100
+
+                elif odds < 10:
+                    embed.add_field(
+                        name=f"10x your money (Looks like someone got a jackpot)", value="", inline=False)
+                    win = int(amount)*10
+
+                elif odds < 100:
+                    embed.add_field(name=f"3x your money (Nice)",
+                                    value="", inline=False)
+                    win = int(amount)*3
+
+                elif odds < 500:
+                    embed.add_field(name=f"2x your money (Nice)",
+                                    value="", inline=False)
+                    win = int(amount)*2
+
+                else:
+                    embed.add_field(
+                        name=f"Well you have lost all your money", value="", inline=False)
+
+                self.data[str(ctx.author.id)]["bal"] += int(win)
+
+            else:
+                embed.add_field(
+                    name=f"You cant gamble what you dont have", value="", inline=False)
+
+            # self.data[str(ctx.author.id)]["bal"] -= int(amount)
+            currentbal = self.data[str(ctx.author.id)]["bal"]
+            embed.add_field(name=f"Current Balance",
+                            value=currentbal, inline=False)
+
+        await ctx.channel.send(embed=embed)
+        saveData(self.data)
 
     @commands.command(name="profile")
     async def profile_prompt(self, ctx, selected_user=None):

@@ -270,7 +270,7 @@ class RPG(commands.Cog):
 
             currentbal = self.data[str(ctx.author.id)]["bal"]
             embed.add_field(name=f"Current Balance",
-                            value=currentbal, inline=False)
+                            value=f"🪙 {currentbal}", inline=False)
 
         await ctx.channel.send(embed=embed)
         saveData(self.data)

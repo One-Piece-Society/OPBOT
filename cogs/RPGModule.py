@@ -268,7 +268,6 @@ class RPG(commands.Cog):
                 embed.add_field(
                     name=f"You cant gamble what you dont have", value="", inline=False)
 
-            # self.data[str(ctx.author.id)]["bal"] -= int(amount)
             currentbal = self.data[str(ctx.author.id)]["bal"]
             embed.add_field(name=f"Current Balance",
                             value=currentbal, inline=False)

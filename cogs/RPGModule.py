@@ -292,16 +292,33 @@ class RPG(commands.Cog):
         self.data = addUser(self.data, str(ctx.author.id))
 
         match = re.search(r'\d+', target)
-        member = [member for member in ctx.channel.members if
+        targetUser = [member for member in ctx.channel.members if
                   member.id == int(match.group())][0]
 
         embed = discord.Embed(color=0xff00e6)
 
-        if member.id == ctx.author.id:
+        self.data = addUser(self.data, str(targetUser.id))
+        if targetUser.id == ctx.author.id:
             embed.add_field(
                 name=f"You cant steal from yourself", value="", inline=False)
+        elif self.data[str(ctx.author.id)]["bal"] <= 0:
+            name = targetUser.name
+            embed.add_field(
+                name=f"{targetUser.name} is poor, there is nothing to steal :(", value="", inline=False)
         else: 
-            
+
+            print(self.data[str(ctx.author.id)]["health"])
+            print(self.data[str(targetUser.id)]["health"])
+
+            userHealth = self.data[str(ctx.author.id)]["health"]
+            targetHealth = self.data[str(targetUser.id)]["health"]
+            userDefence = self.data[str(ctx.author.id)]["defence"]
+            targetDefence = self.data[str(targetUser.id)]["defence"]
+            userAttack = self.data[str(ctx.author.id)]["attack"]
+            targetAttack = self.data[str(targetUser.id)]["attack"]
+
+            embed.add_field(
+                name=f"Health", value="❤️❤️❤️❤️❤️❤️❤️ +10", inline=False)
 
         await ctx.channel.send(embed=embed)
         saveData(self.data)

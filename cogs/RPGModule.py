@@ -275,6 +275,37 @@ class RPG(commands.Cog):
         await ctx.channel.send(embed=embed)
         saveData(self.data)
 
+    @commands.command(name="steal")
+    async def steal_prompt(self, ctx, target):
+        """
+        Take some coins from another ship 
+
+        Description
+        ___________________________________
+        A way to get rich.
+
+        Usage
+        ___________________________________
+        op!steal <@user>
+        """
+
+        self.data = addUser(self.data, str(ctx.author.id))
+
+        match = re.search(r'\d+', target)
+        member = [member for member in ctx.channel.members if
+                  member.id == int(match.group())][0]
+
+        embed = discord.Embed(color=0xff00e6)
+
+        if member.id == ctx.author.id:
+            embed.add_field(
+                name=f"You cant steal from yourself", value="", inline=False)
+        else: 
+            
+
+        await ctx.channel.send(embed=embed)
+        saveData(self.data)
+
     @commands.command(name="profile")
     async def profile_prompt(self, ctx, selected_user=None):
         """

@@ -317,6 +317,11 @@ class RPG(commands.Cog):
             userAttack = self.data[str(ctx.author.id)]["attack"]
             targetAttack = self.data[str(targetUser.id)]["attack"]
 
+            userHealth -= max(targetAttack - random.randint(0, userDefence), 0)
+            targetHealth -= max(userAttack - random.randint(0, targetDefence), 0)
+
+            
+
             embed.add_field(
                 name=f"Health", value="❤️❤️❤️❤️❤️❤️❤️ +10", inline=False)
 

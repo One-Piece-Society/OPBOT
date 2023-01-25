@@ -320,7 +320,17 @@ class RPG(commands.Cog):
             userHealth -= max(targetAttack - random.randint(0, userDefence), 0)
             targetHealth -= max(userAttack - random.randint(0, targetDefence), 0)
 
+            if userHealth <= 0 and targetHealth <= 0:
+                print("both users reset")
             
+            elif userHealth <= 0:
+                print("user looses all loot + reset")
+            elif targetHealth <= 0:
+                print("user gets all targets loot")
+            else:
+                print("get x % of loot from target ")
+
+
 
             embed.add_field(
                 name=f"Health", value="❤️❤️❤️❤️❤️❤️❤️ +10", inline=False)

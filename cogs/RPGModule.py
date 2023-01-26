@@ -346,7 +346,8 @@ class RPG(commands.Cog):
                     name=f"Balance", value=f"🪙 {str(userBal)}", inline=False)
 
                 self.data[str(ctx.author.id)]["health"] = userHealth
-                embed = genHeartEmbed(embed, userHealth)
+
+                embed = genSymbolEmbed(embed, userHealth, '❤️', 'Health', False)
 
             else:
                 if self.data[str(targetUser.id)]["health"] - targetHealth == 0:
@@ -370,7 +371,7 @@ class RPG(commands.Cog):
                 embed.add_field(
                     name=f"Balance", value=f"🪙 {str(userBal)}", inline=False)
 
-                embed = genHeartEmbed(embed, userHealth)
+                embed = genSymbolEmbed(embed, userHealth, '❤️', 'Health', False)
 
         await ctx.channel.send(embed=embed)
         saveData(self.data)
@@ -398,25 +399,36 @@ class RPG(commands.Cog):
 
         embed = discord.Embed(title=f"{member.name}'s Profile", color=0x00ff00)
         embed.set_thumbnail(url=member.avatar.url)
-        embed.add_field(name="Name", value=member.name, inline=True)
+
+        
+
+        bal = self.data[str(member.id)]["bal"]
+        health = self.data[str(member.id)]["health"]
+        attack = self.data[str(member.id)]["attack"]
+        defence = self.data[str(member.id)]["defence"]
+
+        embed.add_field(name="Balance", value=f"🪙 {bal}", inline=True)
+        
+        embed = genSymbolEmbed(embed, health, '❤️', 'Health')
+        embed = genSymbolEmbed(embed, attack, '🗡️', 'Attack')
+        embed = genSymbolEmbed(embed, defence, '🛡️', 'Defence', False)
+
         embed.add_field(name="ID", value=member.id, inline=True)
         embed.add_field(name="Account Created At", value=member.created_at.strftime(
             "%B %d, %Y"), inline=True)
         embed.add_field(name="Server Join Date", value=member.joined_at.strftime(
             "%B %d, %Y"), inline=True)
+
         await ctx.channel.send(embed=embed)
         await ctx.channel.send(member.avatar_url)
 
-        # await ctx.channel.send(embed=embedVar)
-
-
-def genHeartEmbed(embed, health):
-    if health <= 10:
+def genSymbolEmbed(embed, multiple, symbol, text, connected=True):
+    if multiple <= 10:
         embed.add_field(
-            name=f"Health", value='❤️'*health, inline=False)
+            name=text, value=symbol*multiple, inline=connected)
     else:
         embed.add_field(
-            name=f"Health", value=f"❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️ + {str(health-10)}", inline=False)
+            name=text, value=symbol*10 + '+' + str(multiple-10), inline=connected)
 
     return embed
 

@@ -1,8 +1,6 @@
 import discord
 from discord.ext import commands
 from dataGetter import *
-from PIL import Image
-import io
 import json
 import time
 import random
@@ -347,7 +345,8 @@ class RPG(commands.Cog):
 
                 self.data[str(ctx.author.id)]["health"] = userHealth
 
-                embed = genSymbolEmbed(embed, userHealth, '❤️', 'Health', False)
+                embed = genSymbolEmbed(
+                    embed, userHealth, '❤️', 'Health', False)
 
             else:
                 if self.data[str(targetUser.id)]["health"] - targetHealth == 0:
@@ -371,7 +370,8 @@ class RPG(commands.Cog):
                 embed.add_field(
                     name=f"Balance", value=f"🪙 {str(userBal)}", inline=False)
 
-                embed = genSymbolEmbed(embed, userHealth, '❤️', 'Health', False)
+                embed = genSymbolEmbed(
+                    embed, userHealth, '❤️', 'Health', False)
 
         await ctx.channel.send(embed=embed)
         saveData(self.data)
@@ -400,15 +400,13 @@ class RPG(commands.Cog):
         embed = discord.Embed(title=f"{member.name}'s Profile", color=0x00ff00)
         embed.set_thumbnail(url=member.avatar.url)
 
-        
-
         bal = self.data[str(member.id)]["bal"]
         health = self.data[str(member.id)]["health"]
         attack = self.data[str(member.id)]["attack"]
         defence = self.data[str(member.id)]["defence"]
 
         embed.add_field(name="Balance", value=f"🪙 {bal}", inline=True)
-        
+
         embed = genSymbolEmbed(embed, health, '❤️', 'Health')
         embed = genSymbolEmbed(embed, attack, '🗡️', 'Attack')
         embed = genSymbolEmbed(embed, defence, '🛡️', 'Defence', False)
@@ -421,6 +419,7 @@ class RPG(commands.Cog):
 
         await ctx.channel.send(embed=embed)
         await ctx.channel.send(member.avatar_url)
+
 
 def genSymbolEmbed(embed, multiple, symbol, text, connected=True):
     if multiple <= 10:

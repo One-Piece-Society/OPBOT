@@ -293,7 +293,7 @@ class RPG(commands.Cog):
 
         match = re.search(r'\d+', target)
         targetUser = [member for member in ctx.channel.members if
-                  member.id == int(match.group())][0]
+                      member.id == int(match.group())][0]
 
         embed = discord.Embed(color=0xff00e6)
 
@@ -301,14 +301,10 @@ class RPG(commands.Cog):
         if targetUser.id == ctx.author.id:
             embed.add_field(
                 name=f"You cant steal from yourself", value="", inline=False)
-        elif self.data[str(ctx.author.id)]["bal"] <= 0:
-            name = targetUser.name
+        elif self.data[str(targetUser.id)]["bal"] <= 0:
             embed.add_field(
                 name=f"{targetUser.name} is poor, there is nothing to steal :(", value="", inline=False)
-        else: 
-
-            print(self.data[str(ctx.author.id)]["health"])
-            print(self.data[str(targetUser.id)]["health"])
+        else:
 
             userHealth = self.data[str(ctx.author.id)]["health"]
             targetHealth = self.data[str(targetUser.id)]["health"]
@@ -318,22 +314,63 @@ class RPG(commands.Cog):
             targetAttack = self.data[str(targetUser.id)]["attack"]
 
             userHealth -= max(targetAttack - random.randint(0, userDefence), 0)
-            targetHealth -= max(userAttack - random.randint(0, targetDefence), 0)
+            targetHealth -= max(userAttack -
+                                random.randint(0, targetDefence), 0)
 
             if userHealth <= 0 and targetHealth <= 0:
-                print("both users reset")
-            
+                embed.add_field(
+                    name=f"Seams you have both died :(", value=f"A small fortune was swept away by the ocean", inline=False)
+
+                self.data = resetUser(self.data, ctx.author.id)
+                self.data = resetUser(self.data, targetUser.id)
+
             elif userHealth <= 0:
-                print("user looses all loot + reset")
+                embed.add_field(
+                    name=f"You have died, could be worse :(", value=f"", inline=False)
+
+                self.data = resetUser(self.data, ctx.author.id)
+                self.data[str(targetUser.id)]["health"] = targetHealth
+
             elif targetHealth <= 0:
-                print("user gets all targets loot")
+                targetBal = self.data[str(targetUser.id)]["bal"]
+
+                embed.add_field(
+                    name=f"Your target has dies and left you with a small fortune", value=f"🪙 {str(targetBal)}", inline=False)
+
+                self.data = resetUser(self.data, targetUser.id)
+                self.data[str(ctx.author.id)]["bal"] += targetBal
+
+                userBal = self.data[str(ctx.author.id)]["bal"]
+
+                embed.add_field(
+                    name=f"Balance", value=f"🪙 {str(userBal)}", inline=False)
+
+                self.data[str(ctx.author.id)]["health"] = userHealth
+                embed = genHeartEmbed(embed, userHealth)
+
             else:
-                print("get x % of loot from target ")
+                if self.data[str(targetUser.id)]["health"] - targetHealth == 0:
+                    embed.add_field(
+                        name=f"Your target dodged your attack", value="", inline=False)
 
+                lootPerc = (self.data[str(targetUser.id)]["health"] -
+                            targetHealth) / self.data[str(targetUser.id)]["health"]
+                loot = int(self.data[str(targetUser.id)]["bal"]
+                           * lootPerc * (random.randint(80, 100) / 100))
 
+                self.data[str(ctx.author.id)]["health"] = userHealth
+                self.data[str(targetUser.id)]["health"] = targetHealth
+                self.data[str(ctx.author.id)]["bal"] += loot
+                self.data[str(targetUser.id)]["bal"] -= loot
 
-            embed.add_field(
-                name=f"Health", value="❤️❤️❤️❤️❤️❤️❤️ +10", inline=False)
+                userBal = self.data[str(ctx.author.id)]["bal"]
+
+                embed.add_field(
+                    name=f"You got away with", value=f"🪙 {str(loot)}", inline=False)
+                embed.add_field(
+                    name=f"Balance", value=f"🪙 {str(userBal)}", inline=False)
+
+                embed = genHeartEmbed(embed, userHealth)
 
         await ctx.channel.send(embed=embed)
         saveData(self.data)
@@ -371,6 +408,22 @@ class RPG(commands.Cog):
         await ctx.channel.send(member.avatar_url)
 
         # await ctx.channel.send(embed=embedVar)
+
+
+def genHeartEmbed(embed, health):
+    if health <= 10:
+        embed.add_field(
+            name=f"Health", value='❤️'*health, inline=False)
+    else:
+        embed.add_field(
+            name=f"Health", value=f"❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️ + {str(health-10)}", inline=False)
+
+    return embed
+
+
+def resetUser(data, uid):
+    del data[str(uid)]
+    return addUser(data, uid)
 
 
 def loadData(path):

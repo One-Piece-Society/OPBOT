@@ -10,7 +10,7 @@ config = configparser.ConfigParser()
 config.read('config.ini')
 
 
-class admin(commands.Cog):
+class Admin(commands.Cog):
     def __init__(self, client):
         self.client = client
 
@@ -97,6 +97,6 @@ def log_usage(msg):
 
 
 async def setup(client):
-    await client.add_cog(admin(client))
+    await client.add_cog(Admin(client))
     log_usage("Admin Module Reloaded")
     print("Loaded Admin module")

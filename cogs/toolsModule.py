@@ -3,7 +3,7 @@ from discord.ext import commands
 import time
 
 
-class tool(commands.Cog):
+class Tool(commands.Cog):
     def __init__(self, client):
         self.client = client
         self.st = time.time()
@@ -47,5 +47,5 @@ class tool(commands.Cog):
 
 
 async def setup(client):
-    await client.add_cog(tool(client))
+    await client.add_cog(Tool(client))
     print("Loaded tools module")

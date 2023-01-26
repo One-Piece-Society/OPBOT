@@ -3,7 +3,7 @@ from discord.ext import commands
 from dataGetter import *
 
 
-class image(commands.Cog):
+class Image(commands.Cog):
     def __init__(self, client):
         self.client = client
 
@@ -61,5 +61,5 @@ class image(commands.Cog):
 
 
 async def setup(client):
-    await client.add_cog(image(client))
+    await client.add_cog(Image(client))
     print("Loaded image module")

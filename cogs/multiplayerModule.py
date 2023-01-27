@@ -46,13 +46,13 @@ class Multiplayer(commands.Cog):
             await sentMsg.add_reaction('✅')
             self.activeGames[str(ctx.channel.id)] = {"state": "joining"}
 
-            time.sleep(20)
+            time.sleep(2)
             await sentMsg.add_reaction('⏱️')
-            time.sleep(10)
+            time.sleep(1)
 
             await ctx.channel.send("timer up")
             
-            threading.Thread(target=startServer).start()
+            threading.Thread(target=startServer, args=self).start()
 
 
 async def setup(client):

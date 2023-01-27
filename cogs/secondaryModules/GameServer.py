@@ -1,4 +1,4 @@
 # Basic game server thread for instance of game / channel 
 
-def startServer():
+def startServer(game):
     print("thread started ")

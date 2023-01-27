@@ -3,6 +3,8 @@ from discord.ext import commands
 from dataGetter import *
 import configparser
 import time
+import threading
+from cogs.secondaryModules.GameServer import *
 
 
 config = configparser.ConfigParser()
@@ -49,6 +51,8 @@ class Multiplayer(commands.Cog):
             time.sleep(10)
 
             await ctx.channel.send("timer up")
+            
+            threading.Thread(target=startServer).start()
 
 
 async def setup(client):

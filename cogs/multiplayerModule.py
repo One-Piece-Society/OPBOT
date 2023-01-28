@@ -66,7 +66,7 @@ class Multiplayer(commands.Cog):
         await ctx.channel.send(embed=embed)
 
 
-    @commands.command(name="start quiz")
+    @commands.command(name="startquiz")
     async def pictureGame_prompt(self, ctx):
         """
         A simple guess the character quiz
@@ -87,30 +87,66 @@ class Multiplayer(commands.Cog):
             await ctx.channel.send(embed=embed)
             return
 
+        # Setup states for joining
+        embed.add_field(name=f"Quiz session has started",
+                        value="", inline=False)
+        embed.add_field(name=f"", value="", inline=False)
+        embed.add_field(name=f"Game will begin in 30 secs",
+                        value="Click the tick to join", inline=False)
+        sentMsg = await ctx.channel.send(embed=embed)
+        await sentMsg.add_reaction('✅')
+
+        self.activeGames[str(ctx.channel.id)] = {"state": "joining"}
+        print(self.activeGames)
+
+        time.sleep(2)
+        await sentMsg.add_reaction('⏱️')
+        time.sleep(1)
+
+        message = await ctx.fetch_message(sentMsg.id)
+        usersjoined = [user async for user in message.reactions[0].users() if user.id != sentMsg.author.id]
+
+        # Sends game start confirmation 
+        embed = discord.Embed(color=0xa903fc)
+        if len(usersjoined) == 0:
+            embed.add_field(name=f"No one has joined",
+                value="The game will cease to run", inline=False)
+            await ctx.channel.send(embed=embed)
+            del self.activeGames[str(ctx.channel.id)]
+            return
+        
+        
+        # elif len(usersjoined) == 1:
+        #     embed.add_field(name=f"Seams no one wants to join yet",
+        #         value="try again when there are more people (solo feature to be added later)", inline=False)
+        #     await ctx.channel.send(embed=embed)
+        #     del self.activeGames[str(ctx.channel.id)]
+        #     return
+        
         else:
-            embed.add_field(name=f"Quiz session has started",
-                            value="", inline=False)
-            embed.add_field(name=f"", value="", inline=False)
-            embed.add_field(name=f"Game will begin in 30 secs",
-                            value="Click the tick to join", inline=False)
-            sentMsg = await ctx.channel.send(embed=embed)
-            await sentMsg.add_reaction('✅')
+            embed.add_field(name=f"Players joined",
+                            value="The game will start in 10 secs", inline=False)
+            embed.add_field(name=f"",
+                value="50/50 and skips can be used every 5 rounds", inline=False)
 
-            self.activeGames[str(ctx.channel.id)] = {"state": "joining"}
-            print(self.activeGames)
+            self.activeGames[str(ctx.channel.id)]["state"] = 1
+            self.activeGames[str(ctx.channel.id)]["players"] = {}
+            for user in usersjoined:
+                self.activeGames[str(ctx.channel.id)]["players"][str(user.id)] = {
+                    "skip": 0,
+                    "50": 0,
+                    "health": 3,
+                }
 
-            time.sleep(2)
-            await sentMsg.add_reaction('⏱️')
-            time.sleep(1)
+                embed.add_field(name=f"{user.name}",value="", inline=False)
 
-            message = await ctx.fetch_message(sentMsg.id)
+            await ctx.channel.send(embed=embed)
 
-            print(message.reactions)
-            print(type(message.reactions[0]))
-            tick = message.reactions[0]
 
-            async for user in tick.users():
-                await ctx.channel.send(f'{user} has reacted with {tick.emoji}!')
+                
+        print(self.activeGames)
+
+
 
             # for reaction in message.reactions:
             #     print(f'{reaction.emoji} has been used {reaction.count} times')
@@ -120,7 +156,7 @@ class Multiplayer(commands.Cog):
             # for react in sentMsg.reactions:
             #     print(react)
 
-            await ctx.channel.send("timer up")
+        await ctx.channel.send("timer up")
 
             # threading.Thread(target=startServer, args=mainCog).start()
 

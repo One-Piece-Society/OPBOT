@@ -164,6 +164,7 @@ class Multiplayer(commands.Cog):
                       '279119312072081409': {'name': "alex2", 'skip': 5, '50': 2, 'health': 1, "previousAns": "50"},
                       '279119312072081411': {'name': "alex4", 'skip': 5, '50': 2, 'health': 0, "previousAns": "None"},
                       '279119312072081410': {'name': "alex3wwwww", 'skip': 1, '50': 3, 'health': 3, "previousAns": "skip"}}
+        # playerInfo = sorted(playerInfo.items(), key=lambda x: x[1]["bal"])[:-6:-1]:
 
         embed = discord.Embed(color=0xff8800)
 
@@ -171,11 +172,14 @@ class Multiplayer(commands.Cog):
                         value=f"The correct answer was :regional_indicator_{answerValue.lower()}: {answerName}", inline=False)
         embed.add_field(name=f"", value="", inline=False)
         embed.add_field(
-            name=f"Name (:hearts: Health / :negative_squared_cross_mark: 50/50 / :fast_forward: Skips / :capital_abcd: Answer )", value="", inline=False)
+            name=f"Name (:heart: Health / :negative_squared_cross_mark: 50/50 / :fast_forward: Skips / :capital_abcd: Answer )", value="", inline=False)
 
         for idx in playerInfo:
             name = playerInfo[idx]['name']
-            hearts = ":hearts:" * playerInfo[idx]['health']
+            if playerInfo[idx]['health'] > 0:
+                hearts = ":heart:" * playerInfo[idx]['health']
+            else: 
+                hearts = ":skull:"
             skips = playerInfo[idx]['skip']
             halfs = playerInfo[idx]['50']
             givenAns = playerInfo[idx]['previousAns']

@@ -168,7 +168,7 @@ class Multiplayer(commands.Cog):
 
         embed = discord.Embed(color=0xff8800)
 
-        embed.add_field(name=f"Round results",
+        embed.add_field(name=f"Round results ({roundNo})",
                         value=f"The correct answer was :regional_indicator_{answerValue.lower()}: {answerName}", inline=False)
         embed.add_field(name=f"", value="", inline=False)
         embed.add_field(
@@ -176,15 +176,32 @@ class Multiplayer(commands.Cog):
 
         for idx in playerInfo:
             name = playerInfo[idx]['name']
+            
             if playerInfo[idx]['health'] > 0:
                 hearts = ":heart:" * playerInfo[idx]['health']
             else: 
                 hearts = ":skull:"
-            skips = playerInfo[idx]['skip']
-            halfs = playerInfo[idx]['50']
-            givenAns = playerInfo[idx]['previousAns']
+            
+            if playerInfo[idx]['skip'] > 0:
+                skips = f":negative_squared_cross_mark: in {playerInfo[idx]['skip']}"
+            else: 
+                skips = f":negative_squared_cross_mark: ready"
 
-            embed.add_field(name=f"", value=f"{name}      ( {hearts} / {skips} / {halfs} / {givenAns})", inline=False)
+            if playerInfo[idx]['50'] > 0:
+                halfs = f":fast_forward: in {playerInfo[idx]['50']}"
+            else: 
+                halfs = f":fast_forward: ready"
+            
+            if playerInfo[idx]['previousAns'] == "None":
+                givenAns = ":x:"
+            elif playerInfo[idx]['previousAns'] == "50":
+                givenAns = ":negative_squared_cross_mark:"            
+            elif playerInfo[idx]['previousAns'] == "skip":
+                givenAns = ":fast_forward:"
+            else: 
+                givenAns = f":regional_indicator_{playerInfo[idx]['previousAns'].lower()}:"
+
+            embed.add_field(name=f"{name}", value=f"{hearts} / {skips} / {halfs} / {givenAns}", inline=False)
 
             # embed.add_field(
             #     name=f"", value=f":heart:", inline=False)

@@ -4,8 +4,6 @@ from dataGetter import *
 import configparser
 import time
 import threading
-from cogs.secondaryModules.GameServer import *
-
 
 config = configparser.ConfigParser()
 config.read('config.ini')
@@ -52,9 +50,11 @@ class Multiplayer(commands.Cog):
 
             await ctx.channel.send("timer up")
             
-            threading.Thread(target=startServer, args=self).start()
+            threading.Thread(target=startServer, args=mainCog).start()
 
 
 async def setup(client):
-    await client.add_cog(Multiplayer(client))
+    global mainCog
+    mainCog = Multiplayer(client)
+    await client.add_cog(mainCog)
     print("Loaded Multiplayer module")

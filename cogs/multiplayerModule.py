@@ -7,6 +7,7 @@ import time
 config = configparser.ConfigParser()
 config.read('config.ini')
 
+
 class Multiplayer(commands.Cog):
     def __init__(self, client):
         self.client = client
@@ -32,23 +33,30 @@ class Multiplayer(commands.Cog):
         """
         embed = discord.Embed(color=0xff8800)
 
-        if ctx.channel.id in self.activeGames:
-            embed.add_field(name=f"There is already a game started here", value="", inline=True)
-        else: 
-            embed.add_field(name=f"Quiz session has started", value="", inline=False)
+        if str(ctx.channel.id) in self.activeGames:
+            embed.add_field(
+                name=f"There is already a game started here", value="", inline=True)
+            await ctx.channel.send(embed=embed)
+            return
+
+        else:
+            embed.add_field(name=f"Quiz session has started",
+                            value="", inline=False)
             embed.add_field(name=f"", value="", inline=False)
-            embed.add_field(name=f"Game will begin in 30 secs", value="Click the tick to join", inline=False)
+            embed.add_field(name=f"Game will begin in 30 secs",
+                            value="Click the tick to join", inline=False)
 
             sentMsg = await ctx.channel.send(embed=embed)
             await sentMsg.add_reaction('✅')
             self.activeGames[str(ctx.channel.id)] = {"state": "joining"}
+            print(self.activeGames)
 
             time.sleep(2)
             await sentMsg.add_reaction('⏱️')
             time.sleep(1)
 
             await ctx.channel.send("timer up")
-            
+
             # threading.Thread(target=startServer, args=mainCog).start()
 
 

@@ -160,11 +160,14 @@ class Multiplayer(commands.Cog):
         roundNo = 12
         answerName = "luffy"
         answerValue = "A"
-        playerInfo = {'279119312072081408': {'name': "alex", 'skip': 0, '50': 0, 'health': 3, "previousAns": "C"},
-                      '279119312072081409': {'name': "alex2", 'skip': 5, '50': 2, 'health': 1, "previousAns": "50"},
-                      '279119312072081411': {'name': "alex4", 'skip': 5, '50': 2, 'health': 0, "previousAns": "None"},
-                      '279119312072081410': {'name': "alex3wwwww", 'skip': 1, '50': 3, 'health': 3, "previousAns": "skip"}}
-        # playerInfo = sorted(playerInfo.items(), key=lambda x: x[1]["bal"])[:-6:-1]:
+        playerInfo = {'279119312072081408': {'name': "alex", 'skip': 0, '50': 0, 'health': 3, "previousAns": "C", "change": 1},
+                      '279119312072081409': {'name': "alex2", 'skip': 5, '50': 2, 'health': 1, "previousAns": "50", "change": 1},
+                      '279119312072081411': {'name': "alex4", 'skip': 5, '50': 2, 'health': 0, "previousAns": "None", "change": 1},
+                      '279119312072411': {'name': "alex44", 'skip': 5, '50': 2, 'health': 0, "previousAns": "None", "change": 0},
+                      '279119312072081410': {'name': "alex3wwwww", 'skip': 1, '50': 3, 'health': 2, "previousAns": "skip", "change": 0}}
+        sortedplayerInfo = sorted(playerInfo.items(), key=lambda x: (
+            x[1]["health"], x[1]["change"]))[::-1]
+        print(playerInfo)
 
         embed = discord.Embed(color=0xff8800)
 
@@ -174,34 +177,45 @@ class Multiplayer(commands.Cog):
         embed.add_field(
             name=f"Name (:heart: Health / :negative_squared_cross_mark: 50/50 / :fast_forward: Skips / :capital_abcd: Answer )", value="", inline=False)
 
-        for idx in playerInfo:
+        for key in sortedplayerInfo:
+            idx = key[0]
+
             name = playerInfo[idx]['name']
-            
+
             if playerInfo[idx]['health'] > 0:
                 hearts = ":heart:" * playerInfo[idx]['health']
-            else: 
+                if playerInfo[idx]['change'] == 1:
+                    hearts += ":no_entry_sign:"
+            else:
                 hearts = ":skull:"
-            
+
             if playerInfo[idx]['skip'] > 0:
                 skips = f":negative_squared_cross_mark: in {playerInfo[idx]['skip']}"
-            else: 
+            else:
                 skips = f":negative_squared_cross_mark: ready"
 
             if playerInfo[idx]['50'] > 0:
                 halfs = f":fast_forward: in {playerInfo[idx]['50']}"
-            else: 
+            else:
                 halfs = f":fast_forward: ready"
-            
+
             if playerInfo[idx]['previousAns'] == "None":
                 givenAns = ":x:"
             elif playerInfo[idx]['previousAns'] == "50":
-                givenAns = ":negative_squared_cross_mark:"            
+                givenAns = ":negative_squared_cross_mark:"
             elif playerInfo[idx]['previousAns'] == "skip":
                 givenAns = ":fast_forward:"
-            else: 
+            else:
                 givenAns = f":regional_indicator_{playerInfo[idx]['previousAns'].lower()}:"
 
-            embed.add_field(name=f"{name}", value=f"{hearts} / {skips} / {halfs} / {givenAns}", inline=False)
+            if playerInfo[idx]['change'] == 0 and playerInfo[idx]['health'] == 0:
+                embed.add_field(name=f"{name} ({hearts})",
+                                value=f"", inline=False)
+            else:
+                embed.add_field(
+                    name=f"{name} ({hearts})", value=f"{skips} / {halfs} / you answered {givenAns}", inline=False)
+
+            #
 
             # embed.add_field(
             #     name=f"", value=f":heart:", inline=False)

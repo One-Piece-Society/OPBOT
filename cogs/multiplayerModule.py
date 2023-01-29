@@ -4,7 +4,7 @@ from dataGetter import *
 import configparser
 import time
 import random
-
+import dataGetter
 
 config = configparser.ConfigParser()
 config.read('config.ini')
@@ -215,6 +215,42 @@ class Multiplayer(commands.Cog):
                     name=f"{name} ({hearts})", value=f"{skips} / {halfs} / you answered {givenAns}", inline=False)
 
         await ctx.channel.send(embed=embed)
+
+    @commands.command(name="test2")
+    async def screen2_prompt(self, ctx):
+        imageNames = ["Amazon.jpg", "Isa.jpg", "A O.jpg", "Ally.jpg"]
+        questionNo = 12
+
+        embed = discord.Embed(color=0xff8800)
+        embed.add_field(
+            name=f"Guess the character quiz (Q{questionNo})", value="", inline=False)
+
+        image = openImageData(imageNames[0])
+
+        embed.add_field(name=f"", value="", inline=False)
+
+        randomNames = imageNames
+        random.shuffle(randomNames)
+        for i in range(0, 4):
+            name = cleanName(randomNames[i])
+            embed.add_field(name=f":regional_indicator_{chr(97+i)}: {name}", value="", inline=False)
+
+        embed.set_image(url="attachment://image.jpg")
+        sentMsg = await ctx.channel.send(file=image, embed=embed)
+
+        await sentMsg.add_reaction('🇦')
+        await sentMsg.add_reaction('🇧')
+        await sentMsg.add_reaction('🇨')
+        await sentMsg.add_reaction('🇩')
+        await sentMsg.add_reaction('❎')
+        await sentMsg.add_reaction('⏩')
+        
+        print(sentMsg.id)
+
+        
+
+        
+        
 
 
 async def setup(client):

@@ -167,7 +167,6 @@ class Multiplayer(commands.Cog):
                       '279119312072081410': {'name': "alex3wwwww", 'skip': 1, '50': 3, 'health': 2, "previousAns": "skip", "change": 0}}
         sortedplayerInfo = sorted(playerInfo.items(), key=lambda x: (
             x[1]["health"], x[1]["change"]))[::-1]
-        print(playerInfo)
 
         embed = discord.Embed(color=0xff8800)
 
@@ -214,11 +213,6 @@ class Multiplayer(commands.Cog):
             else:
                 embed.add_field(
                     name=f"{name} ({hearts})", value=f"{skips} / {halfs} / you answered {givenAns}", inline=False)
-
-            #
-
-            # embed.add_field(
-            #     name=f"", value=f":heart:", inline=False)
 
         await ctx.channel.send(embed=embed)
 

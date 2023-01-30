@@ -249,7 +249,7 @@ class Multiplayer(commands.Cog):
                                      ]["players"][idx]["health"] -= 1
 
             # Output of results
-            await genResults(ctx, self.activeGames[str(ctx.channel.id)]["state"], answers[0], chr(97+answerNo), self.activeGames[str(ctx.channel.id)]["players"])
+            await genResults(ctx, self.activeGames[str(ctx.channel.id)]["state"], cleanName(answers[0]), chr(97+answerNo), self.activeGames[str(ctx.channel.id)]["players"])
             time.sleep(5)
 
             # Check for winner state

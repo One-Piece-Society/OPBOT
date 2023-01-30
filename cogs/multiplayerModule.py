@@ -96,7 +96,7 @@ class Multiplayer(commands.Cog):
         await sentMsg.add_reaction('✅')
 
         self.activeGames[str(ctx.channel.id)] = {"state": 0}
-        print(self.activeGames)
+        # print(self.activeGames)
 
         time.sleep(2)
         await sentMsg.add_reaction('⏱️')
@@ -113,7 +113,7 @@ class Multiplayer(commands.Cog):
             await ctx.channel.send(embed=embed)
             del self.activeGames[str(ctx.channel.id)]
             return
-
+        # TODO re activate when testing finishes
         # elif len(usersjoined) == 1:
         #     embed.add_field(name=f"Seams no one wants to join yet",
         #         value="try again when there are more people (solo feature to be added later)", inline=False)
@@ -127,7 +127,6 @@ class Multiplayer(commands.Cog):
             embed.add_field(name=f"",
                             value="50/50 and skips can be used every 5 rounds", inline=False)
 
-            self.activeGames[str(ctx.channel.id)]["state"] = 1
             self.activeGames[str(ctx.channel.id)]["players"] = {}
             for user in usersjoined:
                 self.activeGames[str(ctx.channel.id)]["players"][str(user.id)] = {
@@ -135,13 +134,140 @@ class Multiplayer(commands.Cog):
                     "skip": 0,
                     "50": 0,
                     "health": 3,
+                    "previousAns": "None", 
+                    "change": 0
                 }
 
                 embed.add_field(name=f"{user.name}", value="", inline=False)
 
             await ctx.channel.send(embed=embed)
 
-        print(self.activeGames)
+        # TODO re enable
+        # time.sleep(10)
+
+        # print(self.activeGames)
+
+        # Continous loop for characters questions
+        gameCont = True
+        while (gameCont):
+            self.activeGames[str(ctx.channel.id)]["state"] += 1
+
+            # clears current player data
+            print(self.activeGames[str(ctx.channel.id)])
+            for idx in self.activeGames[str(ctx.channel.id)]['players']:
+                valSkip = self.activeGames[str(ctx.channel.id)]["players"][idx]["skip"] 
+                if valSkip > 0:
+                    self.activeGames[str(ctx.channel.id)]["players"][idx]["skip"] -= 1
+
+                val50 = self.activeGames[str(ctx.channel.id)]["players"][idx]["50"] 
+                if val50 > 0:
+                    self.activeGames[str(ctx.channel.id)]["players"][idx]["50"] -= 1
+
+                self.activeGames[str(ctx.channel.id)]["players"][idx]["previousAns"] = "None"
+                self.activeGames[str(ctx.channel.id)]["players"][idx]["change"] = 0
+
+            # Post question data
+            answers = []
+            while len(answers) < 4:
+                newChar = randomFile()
+                if newChar not in answers:
+                    answers.append(newChar)
+
+            # print(answers)
+
+            answerNo, qID = await genQuestion(ctx, self.activeGames[str(ctx.channel.id)]["state"], answers)
+            # print(qID)
+            # print(answer)
+
+            # i = 0
+
+            # Collect answers based on 30 sec timer
+            timerEmoteStart = time.time() + 20
+            timeEnd = timerEmoteStart + 10
+            timerPlaced = False
+            while timeEnd >= time.time():
+                # time.sleep(0.1)
+
+                # print("loading") TODO remove
+                # i += 1
+
+                
+
+                Qmessage = await ctx.fetch_message(qID)
+                # print(Qmessage.reactions)
+                # usersReactsA = [user async for user in Qmessage.reactions[0].users() if user.id != Qmessage.author.id]
+                # usersReactsB = [user async for user in Qmessage.reactions[1].users() if user.id != Qmessage.author.id]
+                # usersReactsC = [user async for user in Qmessage.reactions[2].users() if user.id != Qmessage.author.id]
+                # usersReactsD = [user async for user in Qmessage.reactions[3].users() if user.id != Qmessage.author.id]
+                # usersReacts50 = [user async for user in Qmessage.reactions[4].users() if user.id != Qmessage.author.id]
+                # usersReactsSkip = [user async for user in Qmessage.reactions[5].users() if user.id != Qmessage.author.id]
+                for reaction in Qmessage.reactions:
+                    # print(reaction)
+                    if reaction.count > 1:
+                        # print(reaction.emoji)
+                        # print(reaction.users)
+                        # for user in reaction.users:
+                        #     print(user.name)
+                        # print(users)
+                        users = [user async for user in reaction.users() if user.id != Qmessage.author.id]
+                        # print(users)
+                        
+                        # Process user
+                        for user in users:
+                            await reaction.remove(user)
+                            
+                            # print(user)
+                            if str(user.id) in self.activeGames[str(ctx.channel.id)]["players"] and \
+                                self.activeGames[str(ctx.channel.id)]["players"][str(user.id)]["health"] > 0 and \
+                                self.activeGames[str(ctx.channel.id)]["players"][str(user.id)]["previousAns"] == "None":
+                                
+                                if reaction.emoji == '⏩' and self.activeGames[str(ctx.channel.id)]["players"][str(user.id)]["skip"] == 0:
+                                    await ctx.channel.send(f"{user.name} used a skip ⏩")
+                                    self.activeGames[str(ctx.channel.id)]["players"][str(user.id)]["previousAns"] = "skip"
+                                    self.activeGames[str(ctx.channel.id)]["players"][str(user.id)]["skip"] = 5
+                                elif reaction.emoji == '❎' and self.activeGames[str(ctx.channel.id)]["players"][str(user.id)]["50"] == 0:
+                                    await ctx.channel.send(f"{user.name} used a 50/50 ❎")
+                                    choices = [cleanName(answers[answerNo]), cleanName(answers[random.randint(1, 3)])]
+                                    random.shuffle(choices)
+                                    await user.send(f"The answer could be {choices[0]} or {choices[1]}")
+                                    self.activeGames[str(ctx.channel.id)]["players"][str(user.id)]["50"] = 5
+                                    
+                                elif reaction.emoji == '🇦':
+                                    self.activeGames[str(ctx.channel.id)]["players"][str(user.id)]["previousAns"] = 'A'
+                                elif reaction.emoji == '🇧':
+                                    self.activeGames[str(ctx.channel.id)]["players"][str(user.id)]["previousAns"] = 'B'
+                                elif reaction.emoji == '🇨':
+                                    self.activeGames[str(ctx.channel.id)]["players"][str(user.id)]["previousAns"] = 'C'
+                                elif reaction.emoji == '🇩':
+                                    self.activeGames[str(ctx.channel.id)]["players"][str(user.id)]["previousAns"] = 'D'
+                                    
+
+
+
+                                    
+
+                            
+
+                    # users = await reaction.users().flatten()
+                    # reaction_info = {"emoji": reaction.emoji, "users": users}
+                    # reactions.append(reaction_info)
+                # return reactions
+
+                # [<Reaction emoji='🇦' me=True count=1>, <Reaction emoji='🇧' me=True count=1>, <Reaction emoji='🇨' me=True count=1>, <Reaction emoji='🇩' me=True count=1>, <Reaction emoji='❎' me=True count=1>, <Reaction emoji='⏩' me=True count=1>]
+                # print(usersReacts)
+
+                if timerPlaced == False and timerEmoteStart <= time.time():
+                    print("asdasdasdasdasd")
+                    await Qmessage.add_reaction('⏱️')
+                    timerPlaced = True
+            
+            # Tabulate results
+            print(self.activeGames[str(ctx.channel.id)])
+
+            # print(i)
+
+
+            gameCont = False
 
         # for reaction in message.reactions:
         #     print(f'{reaction.emoji} has been used {reaction.count} times')
@@ -216,46 +342,45 @@ class Multiplayer(commands.Cog):
 
         await ctx.channel.send(embed=embed)
 
-    @commands.command(name="test2")
-    async def screen2_prompt(self, ctx):
-        imageNames = ["Amazon.jpg", "Isa.jpg", "A O.jpg", "Ally.jpg"]
-        questionNo = 12
-
-        embed = discord.Embed(color=0xff8800)
-        embed.add_field(
-            name=f"Guess the character quiz (Q{questionNo})", value="", inline=False)
-
-        image = openImageData(imageNames[0])
-
-        embed.add_field(name=f"", value="", inline=False)
-
-        randomNames = imageNames
-        random.shuffle(randomNames)
-        for i in range(0, 4):
-            name = cleanName(randomNames[i])
-            embed.add_field(name=f":regional_indicator_{chr(97+i)}: {name}", value="", inline=False)
-
-        embed.set_image(url="attachment://image.jpg")
-        sentMsg = await ctx.channel.send(file=image, embed=embed)
-
-        await sentMsg.add_reaction('🇦')
-        await sentMsg.add_reaction('🇧')
-        await sentMsg.add_reaction('🇨')
-        await sentMsg.add_reaction('🇩')
-        await sentMsg.add_reaction('❎')
-        await sentMsg.add_reaction('⏩')
-        
-        print(sentMsg.id)
-        await ctx.author.send("Your message here.")
-
-
-
-        
-
-        
-        
 
 
 async def setup(client):
     await client.add_cog(Multiplayer(client))
     print("Loaded Multiplayer module")
+
+
+async def genQuestion(ctx, questionNo, imageNames):
+    # imageNames = ["Amazon.jpg", "Isa.jpg", "A O.jpg", "Ally.jpg"]
+    # questionNo = 12
+    
+    answer = imageNames[0]
+    embed = discord.Embed(color=0xff8800)
+    embed.add_field(
+        name=f"Guess the character quiz (Q{questionNo})", value="", inline=False)
+
+    image = openImageData(imageNames[0])
+
+    embed.add_field(name=f"", value="", inline=False)
+
+    randomNames = imageNames
+    random.shuffle(randomNames)
+    for i in range(0, 4):
+        name = cleanName(randomNames[i])
+        embed.add_field(
+            name=f":regional_indicator_{chr(97+i)}: {name}", value="", inline=False)
+
+    embed.set_image(url="attachment://image.jpg")
+    sentMsg = await ctx.channel.send(file=image, embed=embed)
+
+    await sentMsg.add_reaction('🇦')
+    await sentMsg.add_reaction('🇧')
+    await sentMsg.add_reaction('🇨')
+    await sentMsg.add_reaction('🇩')
+    await sentMsg.add_reaction('❎')
+    await sentMsg.add_reaction('⏩')
+
+    # print(sentMsg.id)
+    # await ctx.author.send("Your message here.")
+
+
+    return randomNames.index(answer), sentMsg.id

@@ -246,6 +246,9 @@ class Multiplayer(commands.Cog):
         await sentMsg.add_reaction('⏩')
         
         print(sentMsg.id)
+        await ctx.author.send("Your message here.")
+
+
 
         
 

@@ -96,11 +96,10 @@ class Multiplayer(commands.Cog):
         await sentMsg.add_reaction('✅')
 
         self.activeGames[str(ctx.channel.id)] = {"state": 0}
-        # print(self.activeGames)
 
-        time.sleep(2)
+        time.sleep(20)
         await sentMsg.add_reaction('⏱️')
-        time.sleep(1)
+        time.sleep(10)
 
         message = await ctx.fetch_message(sentMsg.id)
         usersjoined = [user async for user in message.reactions[0].users() if user.id != sentMsg.author.id]
@@ -113,14 +112,12 @@ class Multiplayer(commands.Cog):
             await ctx.channel.send(embed=embed)
             del self.activeGames[str(ctx.channel.id)]
             return
-        # TODO re activate when testing finishes
-        # elif len(usersjoined) == 1:
-        #     embed.add_field(name=f"Seams no one wants to join yet",
-        #         value="try again when there are more people (solo feature to be added later)", inline=False)
-        #     await ctx.channel.send(embed=embed)
-        #     del self.activeGames[str(ctx.channel.id)]
-        #     return
-
+        elif len(usersjoined) == 1:
+            embed.add_field(name=f"Seams no one wants to join yet",
+                            value="try again when there are more people (solo feature to be added later)", inline=False)
+            await ctx.channel.send(embed=embed)
+            del self.activeGames[str(ctx.channel.id)]
+            return
         else:
             embed.add_field(name=f"Players joined",
                             value="The game will start in 10 secs", inline=False)
@@ -134,7 +131,7 @@ class Multiplayer(commands.Cog):
                     "skip": 0,
                     "50": 0,
                     "health": 3,
-                    "previousAns": "None", 
+                    "previousAns": "None",
                     "change": 0
                 }
 
@@ -142,10 +139,7 @@ class Multiplayer(commands.Cog):
 
             await ctx.channel.send(embed=embed)
 
-        # TODO re enable
-        # time.sleep(10)
-
-        # print(self.activeGames)
+        time.sleep(10)
 
         # Continous loop for characters questions
         gameCont = True
@@ -155,16 +149,22 @@ class Multiplayer(commands.Cog):
             # clears current player data
             # print(self.activeGames[str(ctx.channel.id)])
             for idx in self.activeGames[str(ctx.channel.id)]['players']:
-                valSkip = self.activeGames[str(ctx.channel.id)]["players"][idx]["skip"] 
+                valSkip = self.activeGames[str(
+                    ctx.channel.id)]["players"][idx]["skip"]
                 if valSkip > 0:
-                    self.activeGames[str(ctx.channel.id)]["players"][idx]["skip"] -= 1
+                    self.activeGames[str(ctx.channel.id)
+                                     ]["players"][idx]["skip"] -= 1
 
-                val50 = self.activeGames[str(ctx.channel.id)]["players"][idx]["50"] 
+                val50 = self.activeGames[str(
+                    ctx.channel.id)]["players"][idx]["50"]
                 if val50 > 0:
-                    self.activeGames[str(ctx.channel.id)]["players"][idx]["50"] -= 1
+                    self.activeGames[str(ctx.channel.id)
+                                     ]["players"][idx]["50"] -= 1
 
-                self.activeGames[str(ctx.channel.id)]["players"][idx]["previousAns"] = "None"
-                self.activeGames[str(ctx.channel.id)]["players"][idx]["change"] = 0
+                self.activeGames[str(ctx.channel.id)
+                                 ]["players"][idx]["previousAns"] = "None"
+                self.activeGames[str(ctx.channel.id)
+                                 ]["players"][idx]["change"] = 0
 
             # Post question data
             answers = []
@@ -173,89 +173,54 @@ class Multiplayer(commands.Cog):
                 if newChar not in answers:
                     answers.append(newChar)
 
-            # print(answers)
-
             answerNo, qID = await genQuestion(ctx, self.activeGames[str(ctx.channel.id)]["state"], answers)
-            # print(qID)
-            print(answerNo)
-            
-
-            # i = 0
 
             # Collect answers based on 30 sec timer
             timerEmoteStart = time.time() + 20
             timeEnd = timerEmoteStart + 10
             timerPlaced = False
             while timeEnd >= time.time():
-                # time.sleep(0.1)
-
-                # print("loading") TODO remove
-                # i += 1
-
-                
-
                 Qmessage = await ctx.fetch_message(qID)
-                # print(Qmessage.reactions)
-                # usersReactsA = [user async for user in Qmessage.reactions[0].users() if user.id != Qmessage.author.id]
-                # usersReactsB = [user async for user in Qmessage.reactions[1].users() if user.id != Qmessage.author.id]
-                # usersReactsC = [user async for user in Qmessage.reactions[2].users() if user.id != Qmessage.author.id]
-                # usersReactsD = [user async for user in Qmessage.reactions[3].users() if user.id != Qmessage.author.id]
-                # usersReacts50 = [user async for user in Qmessage.reactions[4].users() if user.id != Qmessage.author.id]
-                # usersReactsSkip = [user async for user in Qmessage.reactions[5].users() if user.id != Qmessage.author.id]
+
                 for reaction in Qmessage.reactions:
-                    # print(reaction)
                     if reaction.count > 1:
-                        # print(reaction.emoji)
-                        # print(reaction.users)
-                        # for user in reaction.users:
-                        #     print(user.name)
-                        # print(users)
                         users = [user async for user in reaction.users() if user.id != Qmessage.author.id]
-                        # print(users)
-                        
+
                         # Process user
                         for user in users:
                             await reaction.remove(user)
-                            
-                            # print(user)
+
                             if str(user.id) in self.activeGames[str(ctx.channel.id)]["players"] and \
-                                self.activeGames[str(ctx.channel.id)]["players"][str(user.id)]["health"] > 0 and \
-                                self.activeGames[str(ctx.channel.id)]["players"][str(user.id)]["previousAns"] == "None":
-                                
+                                    self.activeGames[str(ctx.channel.id)]["players"][str(user.id)]["health"] > 0 and \
+                                    self.activeGames[str(ctx.channel.id)]["players"][str(user.id)]["previousAns"] == "None":
+
                                 if reaction.emoji == '⏩' and self.activeGames[str(ctx.channel.id)]["players"][str(user.id)]["skip"] == 0:
                                     await ctx.channel.send(f"{user.name} used a skip ⏩")
-                                    self.activeGames[str(ctx.channel.id)]["players"][str(user.id)]["previousAns"] = "skip"
-                                    self.activeGames[str(ctx.channel.id)]["players"][str(user.id)]["skip"] = 5
+                                    self.activeGames[str(ctx.channel.id)]["players"][str(
+                                        user.id)]["previousAns"] = "skip"
+                                    self.activeGames[str(ctx.channel.id)]["players"][str(
+                                        user.id)]["skip"] = 5
                                 elif reaction.emoji == '❎' and self.activeGames[str(ctx.channel.id)]["players"][str(user.id)]["50"] == 0:
                                     await ctx.channel.send(f"{user.name} used a 50/50 ❎")
-                                    choices = [cleanName(answers[answerNo]), cleanName(answers[random.randint(1, 3)])]
+                                    choices = [cleanName(answers[answerNo]), cleanName(
+                                        answers[random.randint(1, 3)])]
                                     random.shuffle(choices)
                                     await user.send(f"The answer could be {choices[0]} or {choices[1]}")
-                                    self.activeGames[str(ctx.channel.id)]["players"][str(user.id)]["50"] = 5
-                                    
+                                    self.activeGames[str(ctx.channel.id)]["players"][str(
+                                        user.id)]["50"] = 5
+
                                 elif reaction.emoji == '🇦':
-                                    self.activeGames[str(ctx.channel.id)]["players"][str(user.id)]["previousAns"] = 'A'
+                                    self.activeGames[str(ctx.channel.id)]["players"][str(
+                                        user.id)]["previousAns"] = 'A'
                                 elif reaction.emoji == '🇧':
-                                    self.activeGames[str(ctx.channel.id)]["players"][str(user.id)]["previousAns"] = 'B'
+                                    self.activeGames[str(ctx.channel.id)]["players"][str(
+                                        user.id)]["previousAns"] = 'B'
                                 elif reaction.emoji == '🇨':
-                                    self.activeGames[str(ctx.channel.id)]["players"][str(user.id)]["previousAns"] = 'C'
+                                    self.activeGames[str(ctx.channel.id)]["players"][str(
+                                        user.id)]["previousAns"] = 'C'
                                 elif reaction.emoji == '🇩':
-                                    self.activeGames[str(ctx.channel.id)]["players"][str(user.id)]["previousAns"] = 'D'
-                                    
-
-
-
-                                    
-
-                            
-
-                    # users = await reaction.users().flatten()
-                    # reaction_info = {"emoji": reaction.emoji, "users": users}
-                    # reactions.append(reaction_info)
-                # return reactions
-
-                # [<Reaction emoji='🇦' me=True count=1>, <Reaction emoji='🇧' me=True count=1>, <Reaction emoji='🇨' me=True count=1>, <Reaction emoji='🇩' me=True count=1>, <Reaction emoji='❎' me=True count=1>, <Reaction emoji='⏩' me=True count=1>]
-                # print(usersReacts)
+                                    self.activeGames[str(ctx.channel.id)]["players"][str(
+                                        user.id)]["previousAns"] = 'D'
 
                 # Time reminder
                 if timerPlaced == False and timerEmoteStart <= time.time():
@@ -273,22 +238,17 @@ class Multiplayer(commands.Cog):
                 if countNonAnswered == 0:
                     break
 
-
             # Tabulate results
-            print(self.activeGames[str(ctx.channel.id)])
             for idx in self.activeGames[str(ctx.channel.id)]['players']:
-                l = self.activeGames[str(ctx.channel.id)]["players"][idx]["previousAns"] 
+                l = self.activeGames[str(ctx.channel.id)
+                                     ]["players"][idx]["previousAns"]
                 if l != "skip" and (l != chr(65+answerNo) or l == "None"):
-                    self.activeGames[str(ctx.channel.id)]["players"][idx]["change"] = 1
-                    self.activeGames[str(ctx.channel.id)]["players"][idx]["health"] -= 1
-                    print(l)
-
-                # print(l)
-                # print(chr(65+answerNo))
-                # self.activeGames[str(ctx.channel.id)]["players"][idx]["change"] = 0
+                    self.activeGames[str(ctx.channel.id)
+                                     ]["players"][idx]["change"] = 1
+                    self.activeGames[str(ctx.channel.id)
+                                     ]["players"][idx]["health"] -= 1
 
             # Output of results
-            print("Res")
             await genResults(ctx, self.activeGames[str(ctx.channel.id)]["state"], answers[0], chr(97+answerNo), self.activeGames[str(ctx.channel.id)]["players"])
             time.sleep(5)
 
@@ -298,12 +258,13 @@ class Multiplayer(commands.Cog):
             for idx in self.activeGames[str(ctx.channel.id)]['players']:
                 if self.activeGames[str(ctx.channel.id)]["players"][idx]["health"] > 0:
                     countAlive += 1
-                    winnerName = self.activeGames[str(ctx.channel.id)]["players"][idx]["name"]
-                    
+                    winnerName = self.activeGames[str(
+                        ctx.channel.id)]["players"][idx]["name"]
+
             if countAlive == 0:
                 embed = discord.Embed(color=0x2bff00)
                 embed.add_field(name=f"Today there were no winner or loosers",
-                value="Everyone has lost", inline=False)
+                                value="Everyone has lost", inline=False)
                 await ctx.channel.send(embed=embed)
                 await ctx.channel.send("https://tenor.com/view/crying-in-the-corner-cute-one-piece-mugiwara-straw-hats-gif-17513547")
                 break
@@ -311,34 +272,15 @@ class Multiplayer(commands.Cog):
             elif countAlive == 1:
                 embed = discord.Embed(color=0x2bff00)
                 embed.add_field(name=f"Congrats to {winnerName} :tada:",
-                value="you know your bountys well", inline=False)
+                                value="you know your bountys well", inline=False)
                 await ctx.channel.send(embed=embed)
                 await ctx.channel.send("https://tenor.com/view/one-piece-happy-smile-gif-4773379")
                 break
 
-        # for reaction in message.reactions:
-        #     print(f'{reaction.emoji} has been used {reaction.count} times')
-
-        # print(sentMsg.id)
-        # print(str(sentMsg.reactions))
-        # for react in sentMsg.reactions:
-        #     print(react)
-
-
-        await ctx.channel.send("timer up")
         del self.activeGames[str(ctx.channel.id)]
 
-        # threading.Thread(target=startServer, args=mainCog).start()
-
-
-async def setup(client):
-    await client.add_cog(Multiplayer(client))
-    print("Loaded Multiplayer module")
 
 async def genQuestion(ctx, questionNo, imageNames):
-    # imageNames = ["Amazon.jpg", "Isa.jpg", "A O.jpg", "Ally.jpg"]
-    # questionNo = 12
-    
     answer = imageNames[0]
     embed = discord.Embed(color=0xff8800)
     embed.add_field(
@@ -365,32 +307,18 @@ async def genQuestion(ctx, questionNo, imageNames):
     await sentMsg.add_reaction('❎')
     await sentMsg.add_reaction('⏩')
 
-    # print(sentMsg.id)
-    # await ctx.author.send("Your message here.")
-
-
     return randomNames.index(answer), sentMsg.id
 
 
 async def genResults(ctx, roundNo, answerName, answerValue, playerInfo):
-    # roundNo = 12
-    # answerName = "luffy"
-    # answerValue = "A"
-    # playerInfo = {'279119312072081408': {'name': "alex", 'skip': 0, '50': 0, 'health': 3, "previousAns": "C", "change": 1},
-    #                 '279119312072081409': {'name': "alex2", 'skip': 5, '50': 2, 'health': 1, "previousAns": "50", "change": 1},
-    #                 '279119312072081411': {'name': "alex4", 'skip': 5, '50': 2, 'health': 0, "previousAns": "None", "change": 1},
-    #                 '279119312072411': {'name': "alex44", 'skip': 5, '50': 2, 'health': 0, "previousAns": "None", "change": 0},
-    #                 '279119312072081410': {'name': "alex3wwwww", 'skip': 1, '50': 3, 'health': 2, "previousAns": "skip", "change": 0}}
-    # print(playerInfo)
-    # d = {'279119312072081408': {'name': 'HUM', 'skip': 0, '50': 0, 'health': 2, 'previousAns': 'A', 'change': 1}}
     sortedplayerInfo = sorted(playerInfo.items(), key=lambda x: (
         x[1]["health"], x[1]["change"]))[::-1]
 
     embed = discord.Embed(color=0xff8800)
     embed.add_field(name=f"Round results ({roundNo})",
-                    value=f"The correct answer was :regional_indicator_{answerValue.lower()}: {answerName}", inline=False)     
+                    value=f"The correct answer was :regional_indicator_{answerValue.lower()}: {answerName}", inline=False)
     embed.add_field(name=f"", value="", inline=False)
-    
+
     embed.add_field(
         name=f"Name (:heart: Health / :negative_squared_cross_mark: 50/50 / :fast_forward: Skips / :capital_abcd: Answer )", value="", inline=False)
 
@@ -435,3 +363,6 @@ async def genResults(ctx, roundNo, answerName, answerValue, playerInfo):
     await ctx.channel.send(embed=embed)
 
 
+async def setup(client):
+    await client.add_cog(Multiplayer(client))
+    print("Loaded Multiplayer module")

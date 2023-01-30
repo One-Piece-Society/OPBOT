@@ -177,7 +177,8 @@ class Multiplayer(commands.Cog):
 
             answerNo, qID = await genQuestion(ctx, self.activeGames[str(ctx.channel.id)]["state"], answers)
             # print(qID)
-            # print(answer)
+            print(answerNo)
+            
 
             # i = 0
 
@@ -286,9 +287,34 @@ class Multiplayer(commands.Cog):
                 # print(chr(65+answerNo))
                 # self.activeGames[str(ctx.channel.id)]["players"][idx]["change"] = 0
 
+            # Output of results
+            print("Res")
+            await genResults(ctx, self.activeGames[str(ctx.channel.id)]["state"], answers[0], chr(97+answerNo), self.activeGames[str(ctx.channel.id)]["players"])
+            time.sleep(5)
 
+            # Check for winner state
+            countAlive = 0
+            winnerName = ""
+            for idx in self.activeGames[str(ctx.channel.id)]['players']:
+                if self.activeGames[str(ctx.channel.id)]["players"][idx]["health"] > 0:
+                    countAlive += 1
+                    winnerName = self.activeGames[str(ctx.channel.id)]["players"][idx]["name"]
+                    
+            if countAlive == 0:
+                embed = discord.Embed(color=0x2bff00)
+                embed.add_field(name=f"Today there were no winner or loosers",
+                value="Everyone has lost", inline=False)
+                await ctx.channel.send(embed=embed)
+                await ctx.channel.send("https://tenor.com/view/crying-in-the-corner-cute-one-piece-mugiwara-straw-hats-gif-17513547")
+                break
 
-            gameCont = False
+            elif countAlive == 1:
+                embed = discord.Embed(color=0x2bff00)
+                embed.add_field(name=f"Congrats to {winnerName} :tada:",
+                value="you know your bountys well", inline=False)
+                await ctx.channel.send(embed=embed)
+                await ctx.channel.send("https://tenor.com/view/one-piece-happy-smile-gif-4773379")
+                break
 
         # for reaction in message.reactions:
         #     print(f'{reaction.emoji} has been used {reaction.count} times')
@@ -298,72 +324,11 @@ class Multiplayer(commands.Cog):
         # for react in sentMsg.reactions:
         #     print(react)
 
+
         await ctx.channel.send("timer up")
         del self.activeGames[str(ctx.channel.id)]
 
         # threading.Thread(target=startServer, args=mainCog).start()
-
-    @commands.command(name="test1")
-    async def screen1_prompt(self, ctx):
-        roundNo = 12
-        answerName = "luffy"
-        answerValue = "A"
-        playerInfo = {'279119312072081408': {'name': "alex", 'skip': 0, '50': 0, 'health': 3, "previousAns": "C", "change": 1},
-                      '279119312072081409': {'name': "alex2", 'skip': 5, '50': 2, 'health': 1, "previousAns": "50", "change": 1},
-                      '279119312072081411': {'name': "alex4", 'skip': 5, '50': 2, 'health': 0, "previousAns": "None", "change": 1},
-                      '279119312072411': {'name': "alex44", 'skip': 5, '50': 2, 'health': 0, "previousAns": "None", "change": 0},
-                      '279119312072081410': {'name': "alex3wwwww", 'skip': 1, '50': 3, 'health': 2, "previousAns": "skip", "change": 0}}
-        sortedplayerInfo = sorted(playerInfo.items(), key=lambda x: (
-            x[1]["health"], x[1]["change"]))[::-1]
-
-        embed = discord.Embed(color=0xff8800)
-
-        embed.add_field(name=f"Round results ({roundNo})",
-                        value=f"The correct answer was :regional_indicator_{answerValue.lower()}: {answerName}", inline=False)
-        embed.add_field(name=f"", value="", inline=False)
-        embed.add_field(
-            name=f"Name (:heart: Health / :negative_squared_cross_mark: 50/50 / :fast_forward: Skips / :capital_abcd: Answer )", value="", inline=False)
-
-        for key in sortedplayerInfo:
-            idx = key[0]
-
-            name = playerInfo[idx]['name']
-
-            if playerInfo[idx]['health'] > 0:
-                hearts = ":heart:" * playerInfo[idx]['health']
-                if playerInfo[idx]['change'] == 1:
-                    hearts += ":no_entry_sign:"
-            else:
-                hearts = ":skull:"
-
-            if playerInfo[idx]['skip'] > 0:
-                skips = f":negative_squared_cross_mark: in {playerInfo[idx]['skip']}"
-            else:
-                skips = f":negative_squared_cross_mark: ready"
-
-            if playerInfo[idx]['50'] > 0:
-                halfs = f":fast_forward: in {playerInfo[idx]['50']}"
-            else:
-                halfs = f":fast_forward: ready"
-
-            if playerInfo[idx]['previousAns'] == "None":
-                givenAns = ":x:"
-            elif playerInfo[idx]['previousAns'] == "50":
-                givenAns = ":negative_squared_cross_mark:"
-            elif playerInfo[idx]['previousAns'] == "skip":
-                givenAns = ":fast_forward:"
-            else:
-                givenAns = f":regional_indicator_{playerInfo[idx]['previousAns'].lower()}:"
-
-            if playerInfo[idx]['change'] == 0 and playerInfo[idx]['health'] == 0:
-                embed.add_field(name=f"{name} ({hearts})",
-                                value=f"", inline=False)
-            else:
-                embed.add_field(
-                    name=f"{name} ({hearts})", value=f"{skips} / {halfs} / you answered {givenAns}", inline=False)
-
-        await ctx.channel.send(embed=embed)
-
 
 
 async def setup(client):
@@ -405,3 +370,68 @@ async def genQuestion(ctx, questionNo, imageNames):
 
 
     return randomNames.index(answer), sentMsg.id
+
+
+async def genResults(ctx, roundNo, answerName, answerValue, playerInfo):
+    # roundNo = 12
+    # answerName = "luffy"
+    # answerValue = "A"
+    # playerInfo = {'279119312072081408': {'name': "alex", 'skip': 0, '50': 0, 'health': 3, "previousAns": "C", "change": 1},
+    #                 '279119312072081409': {'name': "alex2", 'skip': 5, '50': 2, 'health': 1, "previousAns": "50", "change": 1},
+    #                 '279119312072081411': {'name': "alex4", 'skip': 5, '50': 2, 'health': 0, "previousAns": "None", "change": 1},
+    #                 '279119312072411': {'name': "alex44", 'skip': 5, '50': 2, 'health': 0, "previousAns": "None", "change": 0},
+    #                 '279119312072081410': {'name': "alex3wwwww", 'skip': 1, '50': 3, 'health': 2, "previousAns": "skip", "change": 0}}
+    # print(playerInfo)
+    # d = {'279119312072081408': {'name': 'HUM', 'skip': 0, '50': 0, 'health': 2, 'previousAns': 'A', 'change': 1}}
+    sortedplayerInfo = sorted(playerInfo.items(), key=lambda x: (
+        x[1]["health"], x[1]["change"]))[::-1]
+
+    embed = discord.Embed(color=0xff8800)
+    embed.add_field(name=f"Round results ({roundNo})",
+                    value=f"The correct answer was :regional_indicator_{answerValue.lower()}: {answerName}", inline=False)     
+    embed.add_field(name=f"", value="", inline=False)
+    
+    embed.add_field(
+        name=f"Name (:heart: Health / :negative_squared_cross_mark: 50/50 / :fast_forward: Skips / :capital_abcd: Answer )", value="", inline=False)
+
+    for key in sortedplayerInfo:
+        idx = key[0]
+
+        name = playerInfo[idx]['name']
+
+        if playerInfo[idx]['health'] > 0:
+            hearts = ":heart:" * playerInfo[idx]['health']
+            if playerInfo[idx]['change'] == 1:
+                hearts += ":no_entry_sign:"
+        else:
+            hearts = ":skull:"
+
+        if playerInfo[idx]['skip'] > 0:
+            skips = f":negative_squared_cross_mark: in {playerInfo[idx]['skip']}"
+        else:
+            skips = f":negative_squared_cross_mark: ready"
+
+        if playerInfo[idx]['50'] > 0:
+            halfs = f":fast_forward: in {playerInfo[idx]['50']}"
+        else:
+            halfs = f":fast_forward: ready"
+
+        if playerInfo[idx]['previousAns'] == "None":
+            givenAns = ":x:"
+        elif playerInfo[idx]['previousAns'] == "50":
+            givenAns = ":negative_squared_cross_mark:"
+        elif playerInfo[idx]['previousAns'] == "skip":
+            givenAns = ":fast_forward:"
+        else:
+            givenAns = f":regional_indicator_{playerInfo[idx]['previousAns'].lower()}:"
+
+        if playerInfo[idx]['change'] == 0 and playerInfo[idx]['health'] == 0:
+            embed.add_field(name=f"{name} ({hearts})",
+                            value=f"", inline=False)
+        else:
+            embed.add_field(
+                name=f"{name} ({hearts})", value=f"{skips} / {halfs} / you answered {givenAns}", inline=False)
+
+    await ctx.channel.send(embed=embed)
+
+

@@ -153,7 +153,7 @@ class Multiplayer(commands.Cog):
             self.activeGames[str(ctx.channel.id)]["state"] += 1
 
             # clears current player data
-            print(self.activeGames[str(ctx.channel.id)])
+            # print(self.activeGames[str(ctx.channel.id)])
             for idx in self.activeGames[str(ctx.channel.id)]['players']:
                 valSkip = self.activeGames[str(ctx.channel.id)]["players"][idx]["skip"] 
                 if valSkip > 0:
@@ -256,15 +256,36 @@ class Multiplayer(commands.Cog):
                 # [<Reaction emoji='🇦' me=True count=1>, <Reaction emoji='🇧' me=True count=1>, <Reaction emoji='🇨' me=True count=1>, <Reaction emoji='🇩' me=True count=1>, <Reaction emoji='❎' me=True count=1>, <Reaction emoji='⏩' me=True count=1>]
                 # print(usersReacts)
 
+                # Time reminder
                 if timerPlaced == False and timerEmoteStart <= time.time():
                     print("asdasdasdasdasd")
                     await Qmessage.add_reaction('⏱️')
                     timerPlaced = True
-            
+
+                # Fast everyone has answered release
+                countNonAnswered = 0
+                for idx in self.activeGames[str(ctx.channel.id)]['players']:
+                    if self.activeGames[str(ctx.channel.id)]["players"][idx]["previousAns"] == "None":
+                        countNonAnswered += 1
+                        break
+
+                if countNonAnswered == 0:
+                    break
+
+
             # Tabulate results
             print(self.activeGames[str(ctx.channel.id)])
+            for idx in self.activeGames[str(ctx.channel.id)]['players']:
+                l = self.activeGames[str(ctx.channel.id)]["players"][idx]["previousAns"] 
+                if l != "skip" and (l != chr(65+answerNo) or l == "None"):
+                    self.activeGames[str(ctx.channel.id)]["players"][idx]["change"] = 1
+                    self.activeGames[str(ctx.channel.id)]["players"][idx]["health"] -= 1
+                    print(l)
 
-            # print(i)
+                # print(l)
+                # print(chr(65+answerNo))
+                # self.activeGames[str(ctx.channel.id)]["players"][idx]["change"] = 0
+
 
 
             gameCont = False
@@ -278,6 +299,7 @@ class Multiplayer(commands.Cog):
         #     print(react)
 
         await ctx.channel.send("timer up")
+        del self.activeGames[str(ctx.channel.id)]
 
         # threading.Thread(target=startServer, args=mainCog).start()
 
@@ -347,7 +369,6 @@ class Multiplayer(commands.Cog):
 async def setup(client):
     await client.add_cog(Multiplayer(client))
     print("Loaded Multiplayer module")
-
 
 async def genQuestion(ctx, questionNo, imageNames):
     # imageNames = ["Amazon.jpg", "Isa.jpg", "A O.jpg", "Ally.jpg"]

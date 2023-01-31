@@ -5,6 +5,7 @@ import configparser
 import time
 import random
 import dataGetter
+from PIL import Image, ImageDraw
 
 config = configparser.ConfigParser()
 config.read('config.ini')
@@ -147,7 +148,6 @@ class Multiplayer(commands.Cog):
             self.activeGames[str(ctx.channel.id)]["state"] += 1
 
             # clears current player data
-            # print(self.activeGames[str(ctx.channel.id)])
             for idx in self.activeGames[str(ctx.channel.id)]['players']:
                 valSkip = self.activeGames[str(
                     ctx.channel.id)]["players"][idx]["skip"]
@@ -278,6 +278,49 @@ class Multiplayer(commands.Cog):
                 break
 
         del self.activeGames[str(ctx.channel.id)]
+
+    # @commands.command(name="test1")
+    # async def random_imagetest(self, ctx):
+    #     """
+    #     Generates a random image
+        
+    #     Description
+    #     ___________________________________
+    #     From all images on the OP fandom, generate a random image.
+        
+    #     Usage
+    #     ___________________________________
+    #     op!rimage
+    #     """
+    #     await ctx.channel.send("sent")
+        
+    #     imageName = randomFile()
+    #     # image = openImageData(imageName)
+    #     newImg = openBaseImageData(imageName)
+    #     draw = ImageDraw.Draw(newImg)
+        
+    #     # colors = ["red", "green", "blue", "yellow",
+    #     #       "purple", "orange"]
+    #     # for i in range(0, 100, 20):
+    #     #     draw.line((i, 0) + newImg.size, width=5, 
+    #     #             fill=random.choice(colors))
+    #     draw.rectangle((1, 1, 50, 50), fill="red")
+
+    #     unixImgName = str(int(time.time())) + ".jpg"
+    #     newImg.save(f"modImages/{unixImgName}")
+
+    #     print("break")
+    #     image = openImageData(unixImgName, "modImages/")
+    #     charName = cleanName(imageName)
+
+    #     # info = openCharData(charName)
+
+    #     embedVar = discord.Embed(title=charName, color=0xed8b02)
+    #     embedVar.set_image(url="attachment://image.jpg")
+
+    #     await ctx.channel.send(file=image, embed=embedVar)
+    #     await ctx.channel.send("done")
+        
 
 
 async def genQuestion(ctx, questionNo, imageNames):

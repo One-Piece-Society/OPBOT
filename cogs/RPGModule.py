@@ -118,7 +118,7 @@ class RPG(commands.Cog):
 
             await ctx.channel.send(embed=embed)
             return
-
+        
         embed.add_field(
             name=f"Luffy's Shop", value="Do op!shop [item] for more info", inline=False)
         embed.add_field(name="", value="", inline=False)
@@ -132,7 +132,7 @@ class RPG(commands.Cog):
         await ctx.channel.send(embed=embed)
 
     @commands.command(name="buy")
-    async def shop_prompt(self, ctx, item=None):
+    async def buy_prompt(self, ctx, item=None):
         """
         Chooses an item to buy
 

@@ -21,8 +21,7 @@ class Admin(commands.Cog):
             return
 
         verifyCommand = config['verification']['webhookCommand']
-        if ctx.webhook_id == config['verification']['webhookBotID'] and verifyCommand in ctx.content:
-
+        if str(ctx.webhook_id) == config['verification']['webhookBotID'] and verifyCommand in ctx.content:
             verifcationName = ctx.content[len(verifyCommand)+1:]
             authChannel = self.client.get_channel(
                 int(config['verification']['targetChannelID']))

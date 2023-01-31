@@ -172,6 +172,7 @@ class Multiplayer(commands.Cog):
                 newChar = randomFile()
                 if newChar not in answers:
                     answers.append(newChar)
+            realAnswer = answers[0]
 
             answerNo, qID = await genQuestion(ctx, self.activeGames[str(ctx.channel.id)]["state"], answers)
 
@@ -224,7 +225,6 @@ class Multiplayer(commands.Cog):
 
                 # Time reminder
                 if timerPlaced == False and timerEmoteStart <= time.time():
-                    print("asdasdasdasdasd")
                     await Qmessage.add_reaction('⏱️')
                     timerPlaced = True
 
@@ -249,7 +249,7 @@ class Multiplayer(commands.Cog):
                                      ]["players"][idx]["health"] -= 1
 
             # Output of results
-            await genResults(ctx, self.activeGames[str(ctx.channel.id)]["state"], cleanName(answers[0]), chr(97+answerNo), self.activeGames[str(ctx.channel.id)]["players"])
+            await genResults(ctx, self.activeGames[str(ctx.channel.id)]["state"], cleanName(realAnswer), chr(97+answerNo), self.activeGames[str(ctx.channel.id)]["players"])
             time.sleep(5)
 
             # Check for winner state

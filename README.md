@@ -19,8 +19,8 @@ When designing the bot the following was considered.
 - [x] Bot stats
 - [ ] RPG style character collector
 - [ ] Search character feature
-- [ ] Guess the charcter game
-- [ ] User profile
+- [x] Guess the charcter game
+- [x] User profile
 - [x] Auto reverification tagger
 - [x] Manual verification bypass
 - [x] Verification logs + timestamps
@@ -48,12 +48,16 @@ When designing the bot the following was considered.
     [testing]
     isproduction=false
     disableAdmin=false
+    DisableMultiplayer=false
     ```
 
 2. Start instance of Docker
 3. Build script using docker
 4. Run script from docker command
 
+## Data loging and information
+
+There is a comprehensive verification log with time stamps in the "admin.log" file, "rpgData.log" is a secondary log for user info. 
 ## Maintaining functionality
 
 1. Generate python module requirements with

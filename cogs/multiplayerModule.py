@@ -279,47 +279,47 @@ class Multiplayer(commands.Cog):
 
         del self.activeGames[str(ctx.channel.id)]
 
-    # @commands.command(name="test1")
-    # async def random_imagetest(self, ctx):
-    #     """
-    #     Generates a random image
+    @commands.command(name="test1")
+    async def random_imagetest(self, ctx):
+        """
+        Generates a random image
         
-    #     Description
-    #     ___________________________________
-    #     From all images on the OP fandom, generate a random image.
+        Description
+        ___________________________________
+        From all images on the OP fandom, generate a random image.
         
-    #     Usage
-    #     ___________________________________
-    #     op!rimage
-    #     """
-    #     await ctx.channel.send("sent")
+        Usage
+        ___________________________________
+        op!rimage
+        """
+        await ctx.channel.send("sent")
         
-    #     imageName = randomFile()
-    #     # image = openImageData(imageName)
-    #     newImg = openBaseImageData(imageName)
-    #     draw = ImageDraw.Draw(newImg)
+        imageName = randomFile()
+        # image = openImageData(imageName)
+        newImg = openBaseImageData(imageName)
+        draw = ImageDraw.Draw(newImg)
         
-    #     # colors = ["red", "green", "blue", "yellow",
-    #     #       "purple", "orange"]
-    #     # for i in range(0, 100, 20):
-    #     #     draw.line((i, 0) + newImg.size, width=5, 
-    #     #             fill=random.choice(colors))
-    #     draw.rectangle((1, 1, 50, 50), fill="red")
+        # colors = ["red", "green", "blue", "yellow",
+        #       "purple", "orange"]
+        # for i in range(0, 100, 20):
+        #     draw.line((i, 0) + newImg.size, width=5, 
+        #             fill=random.choice(colors))
+        draw.rectangle((1, 1, 50, 50), fill="green")
 
-    #     unixImgName = str(int(time.time())) + ".jpg"
-    #     newImg.save(f"modImages/{unixImgName}")
+        unixImgName = str(int(time.time())) + ".jpg"
+        newImg.save(f"modImages/{unixImgName}")
 
-    #     print("break")
-    #     image = openImageData(unixImgName, "modImages/")
-    #     charName = cleanName(imageName)
+        print("break")
+        image = openImageData(unixImgName, "modImages/")
+        charName = cleanName(imageName)
 
-    #     # info = openCharData(charName)
+        # info = openCharData(charName)
 
-    #     embedVar = discord.Embed(title=charName, color=0xed8b02)
-    #     embedVar.set_image(url="attachment://image.jpg")
+        embedVar = discord.Embed(title=charName, color=0xed8b02)
+        embedVar.set_image(url="attachment://image.jpg")
 
-    #     await ctx.channel.send(file=image, embed=embedVar)
-    #     await ctx.channel.send("done")
+        await ctx.channel.send(file=image, embed=embedVar)
+        await ctx.channel.send("done")
         
 
 

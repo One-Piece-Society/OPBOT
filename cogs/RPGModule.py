@@ -167,7 +167,10 @@ class RPG(commands.Cog):
                         ]["defence"] += self.shopInfo[item]["defence"]
             else: 
                 embed.add_field(
-                    name=f"You can't afford that :(", value="", inline=False)
+                    name=f"You can't afford that :disappointed_relieved:", value="", inline=False)
+        else: 
+            embed.add_field(
+                    name=f"{str(item)} is not found, Do op!shop to see all items", value="", inline=False)
 
         await ctx.channel.send(embed=embed)
         saveData(self.data)

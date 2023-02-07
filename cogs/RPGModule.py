@@ -154,16 +154,20 @@ class RPG(commands.Cog):
             await ctx.channel.send(embed=embed)
             return
 
-        if item in self.shopInfo and self.data[str(ctx.author.id)]["bal"] >= self.shopInfo[item]["cost"]:
-            embed.add_field(
-                name=f"You have obtained a {item}", value="", inline=False)
-            self.data[str(ctx.author.id)]["bal"] -= self.shopInfo[item]["cost"]
-            self.data[str(ctx.author.id)
-                      ]["health"] += self.shopInfo[item]["health"]
-            self.data[str(ctx.author.id)
-                      ]["attack"] += self.shopInfo[item]["attack"]
-            self.data[str(ctx.author.id)
-                      ]["defence"] += self.shopInfo[item]["defence"]
+        if item in self.shopInfo:
+            if self.data[str(ctx.author.id)]["bal"] >= self.shopInfo[item]["cost"]:
+                embed.add_field(
+                    name=f"You have obtained a {item}", value="", inline=False)
+                self.data[str(ctx.author.id)]["bal"] -= self.shopInfo[item]["cost"]
+                self.data[str(ctx.author.id)
+                        ]["health"] += self.shopInfo[item]["health"]
+                self.data[str(ctx.author.id)
+                        ]["attack"] += self.shopInfo[item]["attack"]
+                self.data[str(ctx.author.id)
+                        ]["defence"] += self.shopInfo[item]["defence"]
+            else: 
+                embed.add_field(
+                    name=f"You can't afford that :(", value="", inline=False)
 
         await ctx.channel.send(embed=embed)
         saveData(self.data)

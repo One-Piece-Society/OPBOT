@@ -210,7 +210,7 @@ class RPG(commands.Cog):
         saveData(self.data)
 
     @commands.command(name="gamble")
-    async def gamble_prompt(self, ctx, amount):
+    async def gamble_prompt(self, ctx, amount=None):
         """
         Double your money 
 
@@ -224,8 +224,14 @@ class RPG(commands.Cog):
         op!gamble <amount/all>
         """
         self.data = addUser(self.data, str(ctx.author.id))
-
+        
         embed = discord.Embed(color=0xff00e6)
+
+        if amount == None:
+            embed.add_field(
+                name=f"Please specify an ammount or use \"all\"", value="eg. op!gamble 1000", inline=False)
+            await ctx.channel.send(embed=embed)
+            return
         embed.add_field(
             name=f"Gamble", value="Weird odds are used", inline=False)
 

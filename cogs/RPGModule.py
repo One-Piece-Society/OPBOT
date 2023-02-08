@@ -287,7 +287,7 @@ class RPG(commands.Cog):
         saveData(self.data)
 
     @commands.command(name="steal")
-    async def steal_prompt(self, ctx, target):
+    async def steal_prompt(self, ctx, target=None):
         """
         Take some coins from another ship 
 
@@ -301,6 +301,13 @@ class RPG(commands.Cog):
         """
 
         self.data = addUser(self.data, str(ctx.author.id))
+
+        if target == None: 
+            embed = discord.Embed(color=0xff00e6)
+            embed.add_field(
+                name=f"You need find someone to steal from", value="Use op!steal @victim", inline=False)
+            await ctx.channel.send(embed=embed)
+            return 
 
         match = re.search(r'\d+', target)
         targetUser = [member for member in ctx.channel.members if

@@ -52,16 +52,27 @@ When designing the bot the following was considered.
     ```
 
 2. Start instance of Docker
+
 3. Build script using docker
+
+    ``` linix
+    docker build -t dockerfile .
+    ```
+
 4. Run script from docker command
+
+    ``` linix
+    docker run -dp dockerfile
+    ```
 
 ## Data loging and information
 
-There is a comprehensive verification log with time stamps in the "admin.log" file, "rpgData.log" is a secondary log for user info. 
+There is a comprehensive verification log with time stamps in the "admin.log" file, "rpgData.log" is a secondary log for user info.
+
 ## Maintaining functionality
 
 1. Generate python module requirements with
 
     ``` linix
-        pipreqs ./ --force
+    pipreqs ./ --force
     ```

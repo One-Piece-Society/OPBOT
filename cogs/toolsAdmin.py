@@ -83,7 +83,7 @@ async def verify_user(user, channel):
     if verifiedRole not in user.roles:
         await user.add_roles(verifiedRole)
 
-    await channel.send(f" to the server <@{user.id}> !")
+    await channel.send(f"Welcome to the server <@{user.id}> !")
     log_usage(f"Verified - {user.id} as username {user}")
 
 

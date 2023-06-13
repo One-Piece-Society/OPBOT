@@ -22,7 +22,10 @@ class Admin(commands.Cog):
 
         verifyCommand = config['verification']['webhookCommand']
         if str(ctx.webhook_id) == config['verification']['webhookBotID'] and verifyCommand in ctx.content:
-            verifcationName = ctx.content[len(verifyCommand)+1:]
+            verifcationName = ctx.content[len(verifyCommand)+1:].replace(" ", "")
+            if "#" not in str(verifcationName):
+                verifcationName += "#0"
+            
             authChannel = self.client.get_channel(
                 int(config['verification']['targetChannelID']))
 
@@ -34,12 +37,12 @@ class Admin(commands.Cog):
                     int(config['verification']['errorStateChannel']))
                 await reboundChannel.send(f"Manual verificiation required for ({verifcationName})\nUse < !verify @user > in the welcome channel")
                 log_usage(f"Manual verify message - {verifcationName}")
+                await ctx.add_reaction('❌')
             else:
                 await verify_user(user, authChannel)
                 await ctx.add_reaction('👍')
 
         elif "!verify " == ctx.content[:8]:
-
             authReq = discord.utils.get(
                 ctx.channel.guild.roles, name=config['adminstration']['level2OverRideRole'])
 
